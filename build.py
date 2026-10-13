@@ -25,6 +25,7 @@ INSTAGRAM_URL = "https://www.instagram.com/hoggardib/"
 
 # slug -> page title
 PAGES = {
+    "apply": "Apply",
     "overview": "Overview",
     "is-ib-for-me": "Is IB for Me?",
     "pre-ib-courses": "Required Courses",
@@ -48,7 +49,7 @@ PAGES = {
 # the design asked for it (Pre-IB → Service and Research reuse existing pages).
 NAV = [
     ("About IB", [("overview", None), ("is-ib-for-me", None)]),
-    ("Pre-IB", [("pre-ib-courses", None), ("cas", "Service"), ("pre-ib-research-project", "Research")]),
+    ("Pre-IB", [("apply", None), ("pre-ib-courses", None), ("cas", "Service"), ("pre-ib-research-project", "Research")]),
     ("Diploma Programme", [("diploma-requirements", None), ("cas", None), ("extended-essay", None),
                            ("tok", None), ("courses", None), ("sample-schedules", None)]),
     ("College & Outcomes", [("college-credit", None), ("college-prep", None), ("alumni", None)]),
@@ -122,10 +123,29 @@ def render_includes(body):
                   lambda m: (PARTIALS / f"{m.group(1)}.html").read_text(encoding="utf-8"), body)
 
 
+def render_embeds(body):
+    # <embed-doc kind="slides|pdf|doc" src="…" open="…" title="…"/> shows a Google
+    # Slides deck or Drive/Docs file inline, with a link to open it in a new tab.
+    # The file must be shared as "Anyone with the link can view" to show here.
+    def one(m):
+        a = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
+        title = a.get("title", "Document")
+        return (f'<figure class="embed embed-{a.get("kind", "pdf")}">'
+                f'<div class="embed-frame"><iframe src="{a["src"]}" title="{title}" loading="lazy" allowfullscreen></iframe></div>'
+                f'<figcaption><span>{title}</span><a href="{a.get("open", a["src"])}">Open in new tab</a></figcaption></figure>')
+    return re.sub(r"<embed-doc ([^>]*)/>", one, body)
+
+
+def external_links_new_tab(page):
+    # Every link off the site opens in a new tab so visitors keep their place.
+    return re.sub(r'<a href="(https?://[^"]+)"(?![^>]*\btarget=)',
+                  r'<a href="\1" target="_blank" rel="noopener"', page)
+
+
 def render_page(slug, body):
     is_home = slug == "index"
     title = "Hoggard IB · John T. Hoggard High School" if is_home else f"{PAGES[slug]} · Hoggard IB"
-    body = render_todos(render_includes(body)).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL)
+    body = render_embeds(render_todos(render_includes(body))).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL)
     if not is_home:
         tab = tab_of(slug)
         # Section jump links come from the <section id=… data-title=…> blocks.
@@ -177,7 +197,8 @@ def main():
         raise SystemExit(f"Missing page sources: {', '.join(missing)}")
     for slug in slugs:
         body = (SRC / f"{slug}.html").read_text(encoding="utf-8")
-        (OUT / href(slug)).write_text(render_page(slug, body), encoding="utf-8")
+        page = external_links_new_tab(render_page(slug, body))
+        (OUT / href(slug)).write_text(page, encoding="utf-8")
     print(f"Built {len(slugs)} pages into {OUT.relative_to(ROOT)}/")
 
 
