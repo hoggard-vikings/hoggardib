@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:oklch(0.985 0.004 255);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+*{box-sizing:border-box}
+</style>
+</helmet>
+<div data-screen-label="Homepage" style="max-width:1360px;margin:0 auto;background:oklch(0.985 0.004 255);color:oklch(0.2 0.05 260);font-family:'Archivo',sans-serif">
+
+<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 40px;gap:24px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;background:oklch(0.45 0.17 258);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px">IB</div><div style="display:flex;flex-direction:column;line-height:1.15"><span style="font-weight:800;font-size:18px">Hoggard IB</span><span style="font-size:13px;color:oklch(0.45 0.03 260)">John T. Hoggard High School · Wilmington, NC</span></div></div>
+<a href="https://docs.google.com/forms/d/e/1FAIpQLScHrPXwm4frgHA5qEwlS2z1oS5kUXYG_OlUvzM4LeLVXiaA6g/viewform" style="padding:14px 22px;background:oklch(0.8 0.13 75);color:oklch(0.2 0.05 260);font-weight:700;font-size:16px;display:flex;gap:10px;align-items:center">Apply <span>↗</span></a>
+</div>
+
+<nav onMouseLeave="{{ closeTabs }}" style="position:relative;z-index:10;margin:0 40px;background:oklch(0.2 0.05 260);display:grid;grid-template-columns:repeat(5,minmax(0,1fr))">
+<sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+<div onMouseEnter="{{ tab.open }}" style="position:relative">
+<a href="#" style="display:flex;flex-direction:column;gap:4px;padding:22px clamp(12px,1.6vw,22px);color:#fff;border-right:1px solid oklch(0.3 0.05 260);background:{{ tab.bg }}"><span style="font-size:clamp(14px,1.4vw,19px);font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px">{{ tab.label }}<span style="font-size:14px;color:oklch(0.78 0.08 258)">▾</span></span></a>
+<sc-if value="{{ tab.isOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:100%;left:0;min-width:100%;width:300px;background:#fff;box-shadow:0 12px 32px oklch(0.2 0.05 260 / .18);border-top:4px solid oklch(0.45 0.17 258);padding:8px 0;display:flex;flex-direction:column">
+<sc-for list="{{ tab.pages }}" as="page" hint-placeholder-count="3">
+<a href="{{ page.href }}" style="padding:12px 22px;font-size:16px;font-weight:500" style-hover="background:oklch(0.94 0.025 258)">{{ page.label }}</a>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</nav>
+
+<div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;padding:32px 40px 0;margin-top:32px;border-top:1px solid oklch(0.88 0.02 258)">
+<div style="grid-column:span 7;min-width:0;background:oklch(0.45 0.17 258);color:#fff;padding:56px 48px;display:flex;flex-direction:column;justify-content:flex-end;gap:24px;min-height:520px">
+<div style="font-size:14px;font-weight:500;letter-spacing:.06em">INTERNATIONAL BACCALAUREATE DIPLOMA PROGRAMME</div>
+<h1 style="margin:0;font-size:clamp(52px,7vw,96px);line-height:.92;font-weight:800;letter-spacing:-.035em">Think big.<br>Think global.</h1>
+<p style="margin:0;font-size:20px;line-height:1.5;max-width:520px;color:oklch(0.93 0.03 258)">The IB Diploma Programme at Hoggard — a welcoming community for curious students in grades 9–12.</p>
+</div>
+<div style="grid-column:span 5;display:grid;grid-template-rows:1fr auto;gap:8px">
+<div style="background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;align-items:flex-end;padding:16px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.4 0.05 258);min-height:300px">photo: students on campus</div>
+<a href="#" style="background:oklch(0.8 0.13 75);padding:24px 28px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:20px"><span>Signature Program Night slides</span><span>↗</span></a>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:8px 40px 0">
+<a href="#character" style="background:oklch(0.2 0.05 260);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:800;letter-spacing:-.01em">Character</span><span style="font-size:13px;color:oklch(0.78 0.08 258)">The IB Learner Profile</span></span><span style="font-size:18px">↓</span></a>
+<a href="#service" style="background:oklch(0.2 0.05 260);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:800;letter-spacing:-.01em">Service</span><span style="font-size:13px;color:oklch(0.78 0.08 258)">Creativity, Activity, Service</span></span><span style="font-size:18px">↓</span></a>
+<a href="#research" style="background:oklch(0.2 0.05 260);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:800;letter-spacing:-.01em">Research</span><span style="font-size:13px;color:oklch(0.78 0.08 258)">Extended Essay &amp; investigations</span></span><span style="font-size:18px">↓</span></a>
+<a href="#global" style="background:oklch(0.2 0.05 260);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:800;letter-spacing:-.01em">Global Perspective</span><span style="font-size:13px;color:oklch(0.78 0.08 258)">Theory of Knowledge &amp; more</span></span><span style="font-size:18px">↓</span></a>
+</div>
+
+<div id="character" style="padding:96px 40px 0;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap"><div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">01 · CHARACTER</span><h2 style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1">The IB Learner Profile</h2></div><a href="#/overview" style="font-weight:700;font-size:17px">About the Learner Profile →</a></div>
+<p style="margin:0;font-size:20px;line-height:1.5;max-width:720px">Ten qualities IB students build across every class and activity.</p>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">
+<sc-for list="{{ profile }}" as="p" hint-placeholder-count="10">
+<div style="border-top:4px solid oklch(0.45 0.17 258);background:oklch(0.94 0.025 258);padding:20px;display:flex;flex-direction:column;gap:16px;min-height:120px"><span style="font-size:14px;font-weight:700;color:oklch(0.45 0.17 258)">{{ p.n }}</span><span style="font-size:22px;font-weight:700">{{ p.name }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div id="service" style="padding:96px 40px 0;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">02 · SERVICE</span><h2 style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1">Service</h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:8px">
+<div style="background:oklch(0.94 0.025 258);padding:clamp(28px,3.5vw,48px);display:flex;flex-direction:column;gap:20px;min-height:420px"><span style="font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">CREATIVITY · ACTIVITY · SERVICE</span><h3 style="margin:0;font-size:clamp(36px,5vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1;overflow-wrap:anywhere">CAS</h3><p style="margin:0;font-size:18px;line-height:1.5;max-width:440px">Students pursue experiences in the arts, physical activity and service to the community, reflecting on what they learn along the way.</p><a href="#/cas" style="margin-top:auto;font-weight:700;font-size:17px">See CAS Projects →</a></div>
+<div style="position:relative;min-height:420px;background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;flex-direction:column;justify-content:space-between;padding:20px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.4 0.05 258)">carousel: CAS project photo {{ slideLabel }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;gap:8px"><sc-for list="{{ dots }}" as="d" hint-placeholder-count="5"><span onClick="{{ d.go }}" style="width:28px;height:4px;cursor:pointer;background:{{ d.bg }}"></span></sc-for></div>
+<div style="display:flex;gap:8px"><button onClick="{{ prev }}" style="width:48px;height:48px;border:none;background:oklch(0.2 0.05 260);color:#fff;font-size:20px;cursor:pointer;font-family:inherit">←</button><button onClick="{{ next }}" style="width:48px;height:48px;border:none;background:oklch(0.2 0.05 260);color:#fff;font-size:20px;cursor:pointer;font-family:inherit">→</button></div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="research" style="padding:96px 40px 0;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px"><span style="grid-column:1/-1;font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">03 · RESEARCH</span><h2 style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1">Research</h2></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="background:oklch(0.45 0.17 258);color:#fff;padding:clamp(28px,3.5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));column-gap:40px;row-gap:12px;align-items:center"><span style="grid-column:1/-1;font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.88 0.05 258)">INDEPENDENT RESEARCH</span><h3 style="margin:0;font-size:clamp(32px,3.4vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1;overflow-wrap:anywhere">Extended Essay</h3><p style="margin:0;font-size:18px;line-height:1.5;max-width:440px">A 4,000-word research paper on a topic each student chooses, guided by a faculty supervisor.</p><a href="#/extended-essay" style="font-weight:700;font-size:17px">Subjects and Topics archive →</a></div>
+<div style="background:oklch(0.94 0.025 258);padding:clamp(28px,3.5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));column-gap:40px;row-gap:12px;align-items:center"><span style="grid-column:1/-1;font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">IN EVERY SUBJECT</span><h3 style="margin:0;font-size:clamp(32px,3.4vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1;overflow-wrap:anywhere">Subject Specific Investigations</h3><p style="margin:0;font-size:18px;line-height:1.5;max-width:440px">Each IB course includes an investigation, lab, oral or project marked by teachers and moderated by the IB.</p><a href="#/internal-assessments" style="font-weight:700;font-size:17px">Internal Assessments →</a></div><div style="background:oklch(0.94 0.025 258);padding:clamp(28px,3.5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));column-gap:40px;row-gap:12px;align-items:center"><span style="grid-column:1/-1;font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">GRADES 9–10</span><h3 style="margin:0;font-size:clamp(32px,3.4vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1;overflow-wrap:anywhere">Pre-IB Research Project</h3><p style="margin:0;font-size:18px;line-height:1.5;max-width:440px">Pre-IB students complete a research project that builds the skills they will use for the Extended Essay.</p><a href="#/pre-ib-research-project" style="font-weight:700;font-size:17px">Pre-IB Research Project →</a></div>
+</div>
+</div>
+
+<div id="global" style="padding:96px 40px 0;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.45 0.17 258)">04 · GLOBAL PERSPECTIVE</span><h2 style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1">Global Perspective</h2></div>
+<div style="display:grid;grid-template-columns:7fr 5fr;gap:8px">
+<div style="background:oklch(0.2 0.05 260);color:#fff;padding:clamp(28px,3.5vw,48px);display:flex;flex-direction:column;gap:20px;min-height:380px"><span style="font-size:14px;font-weight:700;letter-spacing:.06em;color:oklch(0.78 0.08 258)">THEORY OF KNOWLEDGE</span><h3 style="margin:0;font-size:clamp(36px,5vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1;overflow-wrap:anywhere">TOK</h3><p style="margin:0;font-size:18px;line-height:1.5;max-width:480px">A course that asks how we know what we claim to know, connecting every subject and drawing on perspectives from around the world.</p><a href="#/tok" style="margin-top:auto;font-weight:700;font-size:17px">About TOK →</a></div>
+<div style="background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;align-items:flex-end;padding:16px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.4 0.05 258);min-height:380px">photo: TOK discussion or language class</div>
+</div>
+</div>
+
+<div style="padding:96px 40px 0;display:grid;grid-template-columns:5fr 7fr;gap:40px">
+<div style="display:flex;flex-direction:column;gap:20px"><h2 style="margin:0;font-size:48px;font-weight:800;letter-spacing:-.03em">Latest</h2>
+<a href="#" style="border-top:2px solid oklch(0.2 0.05 260);padding:18px 0;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:700;color:oklch(0.45 0.17 258)">DEC 4, 2025</span><span style="font-size:22px;font-weight:700">IB Signature Program Night slides</span></a>
+<a href="#/newsletters" style="border-top:2px solid oklch(0.2 0.05 260);padding:18px 0;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:700;color:oklch(0.45 0.17 258)">2025–2026</span><span style="font-size:22px;font-weight:700">Newsletters</span></a>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:48px;font-weight:800;letter-spacing:-.03em">@Instagram</h2><a href="#" style="font-weight:700">Follow →</a></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<div style="aspect-ratio:1;background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;align-items:flex-end;padding:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:oklch(0.4 0.05 258)">instagram post</div>
+<div style="aspect-ratio:1;background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;align-items:flex-end;padding:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:oklch(0.4 0.05 258)">instagram post</div>
+<div style="aspect-ratio:1;background:repeating-linear-gradient(135deg,oklch(0.9 0.02 258) 0 10px,oklch(0.94 0.012 258) 10px 20px);display:flex;align-items:flex-end;padding:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:oklch(0.4 0.05 258)">instagram post</div>
+</div></div>
+</div>
+
+<div style="margin:96px 40px 0;background:oklch(0.45 0.17 258);color:#fff;padding:48px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:15px;font-weight:500;color:oklch(0.92 0.04 258)">Questions? We'd love to hear from you.</span><span style="font-size:48px;font-weight:800;letter-spacing:-.03em">Mary Lillge, IB Coordinator</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:18px;text-align:right"><a href="mailto:mary.lillge@nhcs.net" style="font-weight:700">mary.lillge@nhcs.net</a><span>910-350-2072 Extension 72405</span></div>
+</div>
+
+<footer style="margin:8px 40px 0;background:oklch(0.2 0.05 260);color:oklch(0.92 0.02 258);padding:48px;display:grid;grid-template-columns:1.4fr repeat(5,minmax(0,1fr));gap:32px">
+<div style="display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.5"><span style="font-weight:800;font-size:18px;color:#fff">Hoggard IB</span><span>Mary Lillge, IB Coordinator</span><a href="mailto:mary.lillge@nhcs.net" style="text-decoration:underline">mary.lillge@nhcs.net</a><span>910-350-2072 Ext. 72405</span><a href="#" style="font-weight:700;color:#fff">Instagram ↗</a></div>
+<sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;gap:10px;font-size:14px"><span style="font-weight:700;color:#fff;font-size:15px">{{ tab.label }}</span><sc-for list="{{ tab.pages }}" as="page" hint-placeholder-count="3"><a href="{{ page.href }}">{{ page.label }}</a></sc-for></div>
+</sc-for>
+</footer>
+
+<div style="padding:28px 40px 40px;font-size:13px;line-height:1.5;color:oklch(0.4 0.03 260)">For information related to discrimination and harassment, see NHCS policies <a href="https://www.boardpolicyonline.com/bl/?b=hanover_county_new&amp;s=924410" style="text-decoration:underline">1710</a> - Discrimination and Harassment Prohibited by Federal Law and <a href="https://www.boardpolicyonline.com/bl/?b=hanover_county_new&amp;s=924430" style="text-decoration:underline">1725</a> - Title IX Sexual Harassment.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: -1, slide: 0 };
+  renderVals() {
+    const P = {
+      overview: 'Overview', 'is-ib-for-me': 'Is IB for Me?',
+      'pre-ib-courses': 'Required Courses', cas: 'CAS', 'pre-ib-research-project': 'Research',
+      'diploma-requirements': 'Diploma Requirements', 'extended-essay': 'Extended Essay', tok: 'TOK', courses: 'Courses', 'sample-schedules': 'Sample Schedules',
+      'college-credit': 'College Credit', 'college-prep': 'College Prep', alumni: 'Alumni',
+      policies: 'Policies and Procedures', newsletters: 'Newsletters', contact: 'Contact'
+    };
+    const pg = (slug, label) => ({ href: '#/' + slug, label: label || P[slug] });
+    const T = [
+      ['About IB', [pg('overview'), pg('is-ib-for-me')]],
+      ['Pre-IB', [pg('pre-ib-courses'), pg('cas', 'Service'), pg('pre-ib-research-project')]],
+      ['Diploma Programme', [pg('diploma-requirements'), pg('cas'), pg('extended-essay'), pg('tok'), pg('courses'), pg('sample-schedules')]],
+      ['College & Outcomes', [pg('college-credit'), pg('college-prep'), pg('alumni')]],
+      ['Student Resources', [pg('policies'), pg('newsletters'), pg('contact')]]
+    ];
+    const tabs = T.map(([label, pages], i) => ({
+      label, pages,
+      isOpen: this.state.open === i,
+      bg: this.state.open === i ? 'oklch(0.45 0.17 258)' : 'transparent',
+      open: () => this.setState({ open: i })
+    }));
+    const profile = ['Inquirers','Knowledgeable','Thinkers','Communicators','Principled','Open-minded','Caring','Risk-takers','Balanced','Reflective']
+      .map((name, i) => ({ name, n: String(i + 1).padStart(2, '0') }));
+    const N = 5, s = this.state.slide;
+    return {
+      tabs, profile,
+      closeTabs: () => this.setState({ open: -1 }),
+      slideLabel: `${s + 1} / ${N}`,
+      dots: Array.from({ length: N }, (_, i) => ({ bg: i === s ? 'oklch(0.2 0.05 260)' : 'oklch(0.75 0.04 258)', go: () => this.setState({ slide: i }) })),
+      prev: () => this.setState({ slide: (s + N - 1) % N }),
+      next: () => this.setState({ slide: (s + 1) % N })
+    };
+  }
+}
+</script>
+</body>
+</html>
