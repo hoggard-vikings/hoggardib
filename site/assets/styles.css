@@ -199,3 +199,31 @@ a:hover{text-decoration:underline}
   .insta-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .masthead-actions .btn-apply{padding:12px 16px}
 }
+
+/* Content pages */
+.prose h3{margin:1.2em 0 .4em}
+.prose ul{margin:0 0 1em;padding-left:1.2em}
+.prose li{margin:.3em 0}
+.prose a,.data-table a,.link-list a,.rq-list a{text-decoration:underline;text-underline-offset:2px}
+.box{background:var(--tint);padding:24px 28px;max-width:900px}
+.box h4{margin:1em 0 .3em;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--blue)}
+.box h4:first-child{margin-top:0}
+.note{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.rq-list{margin:0;padding-left:1.2em;font-size:17px;line-height:1.5;display:flex;flex-direction:column;gap:10px;max-width:900px}
+.rq-list.cols{display:block;columns:2 280px;column-gap:40px}
+.rq-list.cols li{margin-bottom:8px;break-inside:avoid}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{background:var(--ink);color:#fff;padding:14px 22px;font-weight:800;font-size:clamp(18px,2vw,24px);letter-spacing:-.01em}
+.link-list{display:flex;flex-direction:column;gap:8px;max-width:900px}
+.link-list a,.link-list .item{background:var(--tint);padding:18px 22px;display:flex;justify-content:space-between;gap:16px;font-weight:700;font-size:18px;text-decoration:none}
+.link-list a::after{content:"↗";font-weight:400}
+.link-list a:hover{background:oklch(0.9 0.04 258)}
+.link-list .sub{display:block;font-weight:400;font-size:15px;color:var(--muted);margin-top:4px}
+.faq .acc-body p{margin:0;font-size:17px;line-height:1.6}
+.accordion summary{font-size:clamp(18px,1.8vw,22px)}
+.data-table td,.data-table th{font-size:15px;line-height:1.45}
+.data-table td:first-child{font-weight:600}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:8px}
+.stat{background:var(--tint);border-top:4px solid var(--blue);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.stat b{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.stat span{font-size:14px;font-weight:700;color:var(--blue)}

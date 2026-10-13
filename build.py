@@ -3,7 +3,9 @@
 
 Every page shares one header, tab bar and footer, generated from NAV below, so a
 page is defined once and every menu and footer link points to that same file.
-Page bodies live in src/pages/<slug>.html. Inside them, <todo>…</todo> marks
+Page bodies live in src/pages/<slug>.html; <include name="x"/> pulls in
+src/partials/x.html (tables copied verbatim from the programme's Google Docs).
+Inside them, <todo>…</todo> marks
 content that still has to be copied word for word from the current site or an
 official IB source; it renders as a visible dashed box.
 
@@ -15,11 +17,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 SRC = ROOT / "src" / "pages"
+PARTIALS = ROOT / "src" / "partials"
 OUT = ROOT / "site"
 
 APPLY_URL = "https://docs.google.com/forms/d/e/1FAIpQLScHrPXwm4frgHA5qEwlS2z1oS5kUXYG_OlUvzM4LeLVXiaA6g/viewform"
-# Not known yet: the current site's Instagram account. Fill in, then rebuild.
-INSTAGRAM_URL = "#"
+INSTAGRAM_URL = "https://www.instagram.com/hoggardib/"
 
 # slug -> page title
 PAGES = {
@@ -113,10 +115,17 @@ def render_todos(body):
     )
 
 
+def render_includes(body):
+    # <include name="x"/> pulls in src/partials/x.html — tables and text copied
+    # word for word from the programme's Google Docs.
+    return re.sub(r'<include name="([^"]+)"/>',
+                  lambda m: (PARTIALS / f"{m.group(1)}.html").read_text(encoding="utf-8"), body)
+
+
 def render_page(slug, body):
     is_home = slug == "index"
     title = "Hoggard IB · John T. Hoggard High School" if is_home else f"{PAGES[slug]} · Hoggard IB"
-    body = render_todos(body).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL)
+    body = render_todos(render_includes(body)).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL)
     if not is_home:
         tab = tab_of(slug)
         # Section jump links come from the <section id=… data-title=…> blocks.
