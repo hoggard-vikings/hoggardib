@@ -678,3 +678,25 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 /* Pages with only two or three section links: each link gets an equal share
    of the bar with its label centred in it. */
 .on-this-page:not(:has(> a:nth-child(4))) > a{flex:1 1 0}
+
+/* Photos */
+.photo{margin:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-1);background:var(--stripe)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.photo.wide{max-width:900px;aspect-ratio:4/3;max-height:460px;width:100%}
+.photo.portrait{aspect-ratio:3/4}
+.photo.fill{min-height:300px}
+.with-photo{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:36px;align-items:start}
+.with-photo .stack{display:flex;flex-direction:column;gap:20px}
+.with-photo > .photo:not(.portrait){aspect-ratio:4/3}
+/* Page title block with a photo on the right. */
+.page-hero-text{display:flex;flex-direction:column;gap:10px}
+.page-hero-inner.has-photo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,44%);align-items:stretch;padding:0;overflow:hidden;height:clamp(180px,17vw,240px)}
+.page-hero-inner.has-photo .page-hero-text{padding:32px 40px;justify-content:center}
+.page-hero-photo{display:block;width:100%;height:100%;min-height:0;object-fit:cover;object-position:center 45%}
+@media (max-width:860px){
+  .with-photo{grid-template-columns:1fr}
+  .with-photo > .photo.portrait{max-width:420px}
+  .page-hero-inner.has-photo{grid-template-columns:1fr;height:auto}
+  .page-hero-inner.has-photo .page-hero-text{padding:24px}
+  .page-hero-photo{min-height:180px;max-height:220px}
+}

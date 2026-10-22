@@ -60,6 +60,11 @@ NAV = [
 # homepage Research section and the Courses page.
 HOME_TAB = {"cas": "Diploma Programme", "internal-assessments": "Diploma Programme"}
 
+# Optional photo on the right of a page's title block: slug -> (image, alt text).
+PAGE_PHOTOS = {
+    "is-ib-for-me": ("assets/images/ib-cohort-outside.jpg", "A large group of Hoggard IB students outside the school"),
+}
+
 
 def href(slug):
     return "index.html" if slug == "index" else f"{slug}.html"
@@ -153,7 +158,10 @@ def render_page(slug, body):
         if len(jumps) > 1:
             jump_html = '<nav class="on-this-page" aria-label="On this page">' + "".join(
                 f'<a href="#{i}">{t}</a>' for i, t in jumps) + "</nav>"
-        body = f"""<header class="page-hero"><div class="page-hero-inner"><span class="crumb">{html.escape(tab)}</span><h1>{html.escape(PAGES[slug])}</h1></div></header>
+        photo = PAGE_PHOTOS.get(slug)
+        photo_html = (f'<img class="page-hero-photo" src="{photo[0]}" alt="{html.escape(photo[1])}">' if photo else "")
+        hero_cls = "page-hero-inner has-photo" if photo else "page-hero-inner"
+        body = f"""<header class="page-hero"><div class="{hero_cls}"><div class="page-hero-text"><span class="crumb">{html.escape(tab)}</span><h1>{html.escape(PAGES[slug])}</h1></div>{photo_html}</div></header>
 {jump_html}
 <main id="main">
 {body}
