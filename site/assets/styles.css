@@ -107,7 +107,7 @@ a:hover{text-decoration:underline}
 /* Homepage hero */
 .hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;padding:24px var(--gutter) 0}
 /* Copy sits at the top, key numbers along the bottom, so the block is filled. */
-.hero-main{grid-column:span 7;min-width:0;background:var(--blue);color:#fff;padding:44px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-height:clamp(440px,64vh,620px)}
+.hero-main{grid-column:span 7;min-width:0;background:var(--blue);color:#fff;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;gap:36px;min-height:clamp(440px,64vh,620px)}
 .hero-copy{display:flex;flex-direction:column;gap:18px}
 .hero-main .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
 .hero-main h1{margin:0;font-size:clamp(38px,4.2vw,60px);line-height:1;font-weight:800;letter-spacing:-.03em;max-width:12ch}
@@ -335,7 +335,7 @@ main > .body-section:first-child{border-top:none}
 .then-now b{font-size:20px;font-weight:800}
 .then-now .arrow{display:flex;align-items:center;font-size:22px;color:var(--blue)}
 .mission{border-left:4px solid var(--blue);background:var(--tint);padding:18px 22px;margin:0;max-width:820px;font-size:17px;line-height:1.65}
-.mission + .mission{margin-top:4px}
+.mission + .mission{margin-top:20px}
 .mission h3{margin:0 0 6px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
 .mission p{margin:0}
 .cta{display:inline-flex;gap:10px;align-items:center;background:var(--sky);color:var(--ink);padding:14px 22px;font-weight:800;font-size:17px;align-self:flex-start}
@@ -577,5 +577,11 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .chips span{border-color:var(--ink)}
 
 /* More breathing room where cards lift on hover. */
-.profile-grid,.people,.stat-row,.two-up,.split-7-5,.compare,.embed-pair{gap:16px}
-.link-list,.accordion{gap:10px}
+.profile-grid,.people,.stat-row,.two-up,.split-7-5,.compare,.embed-pair{gap:20px}
+.link-list,.accordion{gap:14px}
+
+/* Coloured accent strips sit on top of the box's outline: the outline is
+   left off along that edge, so the strip covers it and the curved corners
+   cut the strip off cleanly. */
+.profile-card,.stat,.person,.compare > div,.trait{border-top-width:0}
+.box,.mission,.link-list a,.link-list .item,.accordion details[open]{border-left-width:0}
