@@ -63,21 +63,94 @@ document.documentElement.classList.add('js');
     Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty('--i', Math.min(i, 10)); });
   });
 
-  document.querySelectorAll('[data-carousel]').forEach(function (root) {
-    var slides = root.querySelectorAll('[data-slide]');
-    var dots = root.querySelectorAll('.dots button');
-    var label = root.querySelector('[data-label]');
-    var i = 0, n = slides.length;
-    function show(k) {
-      i = (k + n) % n;
-      slides.forEach(function (s, j) { s.hidden = j !== i; });
-      dots.forEach(function (d, j) { d.setAttribute('aria-current', String(j === i)); });
-      if (label) label.textContent = (i + 1) + ' / ' + n;
+  // Rotating carousels ([data-rotator]): one item in the centre, its
+  // neighbours smaller and fainter on each side, turning slowly on their own.
+  // Pauses while hovered, focused, off screen or in a background tab; never
+  // auto-rotates for visitors who ask for reduced motion. Click a side item,
+  // the arrows or a dot to move; swipe on touch screens. Without JavaScript the
+  // items simply show as a grid.
+  document.querySelectorAll('[data-rotator]').forEach(function (root) {
+    var track = root.querySelector('.rotator-track');
+    var items = Array.prototype.slice.call(track.children);
+    var n = items.length, current = 0, paused = false, onScreen = true, timer;
+    var interval = parseInt(root.getAttribute('data-interval'), 10) || 4000;
+
+    var controls = document.createElement('div');
+    controls.className = 'rotator-controls';
+    var prev = document.createElement('button');
+    prev.type = 'button'; prev.className = 'rotator-arrow'; prev.setAttribute('aria-label', 'Previous'); prev.textContent = '←';
+    var next = document.createElement('button');
+    next.type = 'button'; next.className = 'rotator-arrow'; next.setAttribute('aria-label', 'Next'); next.textContent = '→';
+    var dots = document.createElement('div');
+    dots.className = 'rotator-dots';
+    var dotButtons = items.map(function (item, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.setAttribute('aria-label', (item.textContent || 'Item').trim().replace(/\s+/g, ' ').replace(/^\d+ \/ \d+ /, '') + ' (' + (i + 1) + ' of ' + n + ')');
+      d.addEventListener('click', function () { go(i); restart(); });
+      dots.appendChild(d);
+      return d;
+    });
+    controls.appendChild(prev); controls.appendChild(dots); controls.appendChild(next);
+    root.appendChild(controls);
+    var live = document.createElement('div');
+    live.className = 'visually-hidden'; live.setAttribute('aria-live', 'polite');
+    root.appendChild(live);
+
+    function layout() {
+      var w = track.clientWidth;
+      var itemW = items[0].offsetWidth;
+      var step = Math.min(itemW * 0.96, (w - itemW) / 2 + itemW * 0.3);
+      items.forEach(function (item, i) {
+        var o = ((i - current) % n + n + Math.floor(n / 2)) % n - Math.floor(n / 2); // -n/2 … n/2
+        var d = Math.abs(o);
+        item.style.transform = 'translate(-50%, -50%) translateX(' + (o * step) + 'px) scale(' + (d === 0 ? 1 : d === 1 ? 0.8 : 0.64) + ')';
+        item.style.opacity = d === 0 ? 1 : d === 1 ? 0.5 : d === 2 ? 0.18 : 0;
+        item.style.zIndex = String(10 - d);
+        item.style.visibility = d > 2 ? 'hidden' : 'visible';
+        item.classList.toggle('is-center', d === 0);
+        item.setAttribute('aria-hidden', String(d !== 0));
+      });
+      dotButtons.forEach(function (d, i) { d.setAttribute('aria-current', String(i === current)); });
     }
-    root.querySelector('[data-prev]').addEventListener('click', function () { show(i - 1); });
-    root.querySelector('[data-next]').addEventListener('click', function () { show(i + 1); });
-    dots.forEach(function (d, j) { d.addEventListener('click', function () { show(j); }); });
-    show(0);
+    function go(i) {
+      current = (i + n) % n;
+      layout();
+      if (!autoplay()) live.textContent = (items[current].textContent || '').trim().replace(/\s+/g, ' ');
+    }
+    function autoplay() { return !reduceMotion && !paused && onScreen && !document.hidden; }
+    function restart() {
+      clearInterval(timer);
+      timer = setInterval(function () { if (autoplay()) go(current + 1); }, interval);
+    }
+
+    items.forEach(function (item, i) {
+      item.addEventListener('click', function () { if (i !== current) { go(i); restart(); } });
+    });
+    prev.addEventListener('click', function () { go(current - 1); restart(); });
+    next.addEventListener('click', function () { go(current + 1); restart(); });
+    root.addEventListener('mouseenter', function () { paused = true; });
+    root.addEventListener('mouseleave', function () { paused = false; });
+    root.addEventListener('focusin', function () { paused = true; });
+    root.addEventListener('focusout', function (e) { if (!root.contains(e.relatedTarget)) paused = false; });
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { go(current - 1); restart(); }
+      if (e.key === 'ArrowRight') { go(current + 1); restart(); }
+    });
+    var startX = null;
+    track.addEventListener('pointerdown', function (e) { startX = e.clientX; });
+    track.addEventListener('pointerup', function (e) {
+      if (startX === null) return;
+      var dx = e.clientX - startX; startX = null;
+      if (Math.abs(dx) > 40) { go(current + (dx < 0 ? 1 : -1)); restart(); }
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; }).observe(root);
+    }
+    window.addEventListener('resize', layout);
+    root.classList.add('is-ready');
+    layout();
+    restart();
   });
 
   // Jump links: scroll smoothly, then flash the section once it's in place so

@@ -7,7 +7,8 @@
   /* Shades derived from them */
   --ink:#172a52;          /* text, tab bar, footer, dark panels */
   --blue:var(--navy);     /* hero, page headers, eyebrow text */
-  --tint:#e9f3fa;         /* card and panel backgrounds */
+  --tint:#dceaf6;         /* card and panel backgrounds */
+  --tint-edge:#bcd8ee;    /* hairline border so tinted boxes stand off white */
   --sky-soft:#cfe5f4;     /* hover states, jump-link flash */
   --paper:#f3f6fa;
   --band:#fff;
@@ -105,9 +106,20 @@ a:hover{text-decoration:underline}
 
 /* Homepage hero */
 .hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;padding:24px var(--gutter) 0}
-.hero-main{grid-column:span 7;min-width:0;background:var(--blue);color:#fff;padding:44px;display:flex;flex-direction:column;justify-content:flex-end;gap:16px;min-height:clamp(440px,64vh,620px)}
-.hero-main h1{margin:0;font-size:clamp(44px,5vw,72px);line-height:.95;font-weight:800;letter-spacing:-.035em}
-.hero-main p{margin:0;font-size:18px;line-height:1.5;max-width:480px;color:var(--on-blue-soft)}
+/* Copy sits at the top, key numbers along the bottom, so the block is filled. */
+.hero-main{grid-column:span 7;min-width:0;background:var(--blue);color:#fff;padding:44px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-height:clamp(440px,64vh,620px);
+  background-image:radial-gradient(circle at 100% 0,rgb(90 163 211 / .28),transparent 55%)}
+.hero-copy{display:flex;flex-direction:column;gap:18px}
+.hero-main .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
+.hero-main h1{margin:0;font-size:clamp(38px,4.2vw,60px);line-height:1;font-weight:800;letter-spacing:-.03em;max-width:12ch}
+.hero-main p{margin:0;font-size:19px;line-height:1.5;max-width:480px;color:var(--on-blue-soft)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.cta.ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgb(255 255 255 / .55)}
+.cta.ghost:hover{background:rgb(255 255 255 / .12);box-shadow:inset 0 0 0 2px #fff}
+.hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding-top:22px;border-top:1px solid rgb(255 255 255 / .2)}
+.hero-stats div{display:flex;flex-direction:column;gap:4px}
+.hero-stats b{font-size:clamp(28px,2.8vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1;color:#fff}
+.hero-stats span{font-size:14px;line-height:1.4;color:var(--on-blue-soft)}
 /* The photo fills the full height of the blue block. */
 .hero-side{grid-column:span 5;display:grid;grid-template-rows:1fr}
 .hero-side .placeholder{min-height:100%}
@@ -145,7 +157,9 @@ a:hover{text-decoration:underline}
 .arrows{display:flex;gap:8px}
 .arrows button{width:40px;height:40px;border:none;background:var(--ink);color:#fff;font-size:17px;cursor:pointer;font-family:inherit}
 
-.rows{display:flex;flex-direction:column;gap:8px}
+.rows{display:flex;flex-direction:column;gap:20px}
+.rows .row{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,.85fr)}
+@media (max-width:860px){.rows .row{grid-template-columns:1fr}}
 .row{background:var(--tint);padding:clamp(20px,2.4vw,32px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));column-gap:32px;row-gap:8px;align-items:center}
 .row.blue{background:var(--blue);color:#fff}
 .row.blue .eyebrow{color:#cfe5f4}
@@ -489,3 +503,69 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .tab-menu::before{display:none}
   .contact-band{margin:32px var(--gutter);padding:24px}
 }
+
+/* ------------------------------------------------------------------
+   Rotating carousels: Learner Profile traits and photo carousels.
+   ------------------------------------------------------------------ */
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rotator{position:relative;display:flex;flex-direction:column;gap:16px;outline:none}
+/* Without JavaScript the items show as a simple grid. */
+.rotator:not(.is-ready) .rotator-track{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.rotator.is-ready .rotator-track{position:relative;overflow:hidden;touch-action:pan-y}
+.rotator.is-ready .rotator-item{position:absolute;left:50%;top:50%;cursor:pointer;user-select:none;
+  transition:transform .8s cubic-bezier(.2,.75,.2,1),opacity .8s ease,background .5s,color .5s,box-shadow .5s}
+.rotator.is-ready .rotator-item.is-center{cursor:default}
+.rotator:not(.is-ready) .rotator-item{position:relative}
+.rotator-controls{display:flex;align-items:center;justify-content:center;gap:14px}
+.rotator-arrow{width:40px;height:40px;border:none;border-radius:50%;background:#fff;color:var(--ink);font-size:17px;cursor:pointer;box-shadow:var(--shadow-1);transition:background .2s,box-shadow .2s,transform .12s}
+.rotator-arrow:hover{background:var(--sky-soft);box-shadow:var(--shadow-2)}
+.rotator-arrow:active{transform:scale(.94)}
+.rotator-dots{display:flex;gap:6px}
+.rotator-dots button{width:8px;height:8px;padding:0;border:none;border-radius:4px;background:#a9c6de;cursor:pointer;transition:width .35s,background .35s}
+.rotator-dots button[aria-current="true"]{width:26px;background:var(--navy)}
+
+/* Learner Profile: the centred trait is a large dark-blue card. */
+.rotator-traits .rotator-track{height:230px}
+.trait{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px 28px;background:var(--tint);border:1px solid var(--tint-edge);border-radius:var(--radius);box-shadow:var(--shadow-1)}
+.rotator.is-ready .trait{width:min(380px,62%);height:190px}
+.trait .n{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--blue)}
+.trait .name{font-size:clamp(26px,2.8vw,38px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.trait.is-center{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:var(--shadow-2)}
+.trait.is-center .n{color:var(--sky)}
+.trait::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--sky)}
+.trait{overflow:hidden}
+
+/* Photo carousels: the centred photo is full strength, neighbours peek in. */
+.rotator-photos{background:#fff;border:1px solid var(--tint-edge);border-radius:var(--radius);box-shadow:var(--shadow-1);padding:16px}
+.rotator-photos .rotator-track{flex:1;min-height:300px;border-radius:var(--radius-sm)}
+.rotator-photos.is-ready .rotator-item{width:68%;height:calc(100% - 24px);object-fit:cover;border-radius:var(--radius-sm);box-shadow:var(--shadow-1)}
+.rotator-photos .rotator-item.placeholder{align-items:flex-end}
+
+@media (max-width:860px){
+  .rotator-traits .rotator-track{height:190px}
+  .rotator.is-ready .trait{width:68%;height:160px;padding:18px 20px}
+  .rotator-photos .rotator-track{min-height:240px}
+  .hero-main{padding:28px 24px;gap:24px}
+  .hero-stats{grid-template-columns:1fr;gap:12px}
+  .hero-stats div{flex-direction:row;align-items:baseline;gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  .rotator.is-ready .rotator-item{transition:opacity .2s}
+}
+
+/* Hero stats arrive just after the headline. */
+.hero-copy .kicker,.hero-actions{animation:rise .7s .12s cubic-bezier(.2,.7,.2,1) both}
+.hero-actions{animation-delay:.3s}
+.hero-stats{animation:rise .7s .4s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.hero-copy .kicker,.hero-actions,.hero-stats{animation:none}}
+
+/* Light-blue boxes: a slightly deeper tint plus a hairline edge so they
+   stand clearly off white without looking harsh. */
+.panel:not(.blue):not(.ink),.row:not(.blue),.profile-card,.stat,.person,.compare > div,
+.then-now > div:not(.arrow):not(:nth-child(3n)),.contact-card,.box,.mission,.link-list a,.link-list .item,
+.accordion details,.chips span{border:1px solid var(--tint-edge)}
+.chips span{border-color:var(--ink)}
+
+/* More breathing room where cards lift on hover. */
+.profile-grid,.people,.stat-row,.two-up,.split-7-5,.compare,.embed-pair{gap:16px}
+.link-list,.accordion{gap:10px}
