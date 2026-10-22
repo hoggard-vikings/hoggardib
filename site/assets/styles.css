@@ -724,3 +724,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 /* Before Instagram's embed loads (or if it's blocked), each post shows as a tidy link card. */
 .insta-post blockquote.instagram-media{background:#fff!important;padding:28px 20px!important;text-align:center;font-weight:700}
 .insta-post blockquote.instagram-media a{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+
+.news-item.no-link:hover{transform:none;box-shadow:var(--shadow-1)}
+.news-item.no-link::after{content:none}

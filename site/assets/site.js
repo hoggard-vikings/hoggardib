@@ -146,10 +146,15 @@ document.documentElement.classList.add('js');
   var feedSection = document.querySelector('[data-feed]');
   var feedUrl = feedSection && feedSection.getAttribute('data-feed');
   if (feedUrl && window.fetch) {
+    // Repairs common typos (https;// https// no scheme) and allows only web
+    // addresses or pages on this site; anything else comes back as null.
     var safeLink = function (href) {
-      href = String(href || '').trim();
-      if (/^https?:\/\//i.test(href)) return href;
+      href = String(href || '').trim().replace(/\s+/g, '');
+      if (!href) return null;
+      href = href.replace(/^(https?)[;:]*\/+/i, '$1://');
+      if (/^https?:\/\/[^\s\/]+\.[^\s]+/i.test(href)) return href;
       if (/^[a-z0-9][a-z0-9\-_.\/]*\.html(#[\w\-]+)?$/i.test(href) || /^#[\w\-]+$/.test(href)) return href;
+      if (/^(www\.)?[a-z0-9\-]+(\.[a-z0-9\-]+)+(\/\S*)?$/i.test(href)) return 'https://' + href;
       return null;
     };
     var instagramLink = function (href) {
@@ -164,12 +169,13 @@ document.documentElement.classList.add('js');
         clearTimeout(timeout);
         var list = feedSection.querySelector('[data-feed-latest]');
         var items = (data.latest || []).map(function (it) {
+          if (!it.title) return null;
           var href = safeLink(it.link);
-          if (!href || !it.title) return null;
-          var a = document.createElement('a');
-          a.className = 'news-item';
-          a.href = href;
-          if (/^https?:/i.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+          // An item whose link can't be used still shows, just not clickable.
+          var a = document.createElement(href ? 'a' : 'div');
+          a.className = 'news-item' + (href ? '' : ' no-link');
+          if (href) a.href = href;
+          if (href && /^https?:/i.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
           var d = document.createElement('span'); d.className = 'd'; d.textContent = it.label || '';
           var t = document.createElement('span'); t.className = 't'; t.textContent = it.title;
           a.appendChild(d); a.appendChild(t);

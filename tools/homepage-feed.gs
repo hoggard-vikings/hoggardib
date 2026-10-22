@@ -125,7 +125,7 @@ function buildFeed_() {
     .filter(function (r) { return r.shown && String(r.title || '').trim(); })
     .slice(0, 2)
     .map(function (r) {
-      return { label: formatLabel_(r.label), title: String(r.title).trim(), link: String(r.link || '').trim() };
+      return { label: formatLabel_(r.label), title: String(r.title).trim(), link: normalizeLink_(r.link) };
     });
 
   var instaTab = readTab_('Instagram', ['post'], ['show', 'post']);
@@ -211,6 +211,17 @@ function colLetter_(i) {
   var s = '';
   for (i = i + 1; i > 0; i = Math.floor((i - 1) / 26)) s = String.fromCharCode(65 + (i - 1) % 26) + s;
   return s;
+}
+
+// Repairs common link typos: "https;//", "https//", or no "https://" at all.
+// Pages on this site ("apply.html", "cas.html#cas-projects") are left alone.
+function normalizeLink_(value) {
+  var href = String(value || '').trim().replace(/\s+/g, '');
+  if (!href) return '';
+  href = href.replace(/^(https?)[;:]*\/+/i, '$1://');
+  if (/^https?:\/\//i.test(href) || /\.html(#[\w\-]+)?$/i.test(href) || /^#/.test(href)) return href;
+  if (/^(www\.)?[a-z0-9\-]+(\.[a-z0-9\-]+)+(\/\S*)?$/i.test(href)) return 'https://' + href;
+  return href;
 }
 
 // Date cells become e.g. "DEC 4, 2025"; text such as "2025–2026" is kept as typed.
