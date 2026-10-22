@@ -63,6 +63,19 @@ document.documentElement.classList.add('js');
     Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty('--i', Math.min(i, 10)); });
   });
 
+  // Pinned masthead (desktop): a soft shadow appears once the page scrolls, and
+  // its real height positions the floating section-link bar just below it.
+  var masthead = document.querySelector('.masthead');
+  if (masthead) {
+    var setMast = function () {
+      document.documentElement.style.setProperty('--mast-h', masthead.offsetHeight + 'px');
+    };
+    var onScroll = function () { masthead.classList.toggle('is-stuck', window.scrollY > 4); };
+    setMast(); onScroll();
+    window.addEventListener('resize', setMast);
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
   // Homepage: the pillar panel overlaps the bottom of the hero photo by a
   // quarter of its own height (it wraps to more rows on smaller screens).
   var pillars = document.querySelector('.hero + .pillars');

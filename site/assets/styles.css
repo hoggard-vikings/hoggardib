@@ -111,7 +111,7 @@ a:hover{text-decoration:underline}
 .hero-bg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);object-fit:cover;object-position:center 62%;filter:blur(3px);transform:scale(1.02)}
 .hero::after{content:"";position:absolute;inset:0;background:rgb(23 42 82 / .32);pointer-events:none}
 .hero-inner{position:relative;z-index:1;display:flex;align-items:center;min-height:clamp(520px,72vh,740px);padding:56px var(--gutter) 80px}
-.hero-main{width:min(660px,58%);aspect-ratio:3/2;min-width:0;background:var(--blue);color:#fff;padding:36px 44px;display:flex;flex-direction:column;justify-content:center;gap:26px;box-shadow:var(--shadow-3)}
+.hero-main{width:min(660px,58%);aspect-ratio:3/2;min-width:0;background:var(--ink);color:#fff;padding:36px 44px;display:flex;flex-direction:column;justify-content:center;gap:26px;box-shadow:var(--shadow-3)}
 .hero-copy{display:flex;flex-direction:column;gap:18px}
 .hero-main .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
 .hero-main h1{margin:0;font-size:clamp(34px,3.4vw,50px);line-height:1.02;font-weight:800;letter-spacing:-.03em}
@@ -427,9 +427,21 @@ main > .body-section:first-child{border-top:none}
    rest of the page dims behind them. */
 @media (min-width:861px){
   /* The tab bar stays pinned to the top while scrolling. */
-  .tabs{position:sticky;top:0;z-index:30}
-  :root{--jump-offset:140px}
-  .on-this-page{top:58px}
+  /* The white masthead (logo + Apply) stays pinned while scrolling; the dark
+     tab bar scrolls away with the page. */
+  :root{--mast-h:68px;--jump-offset:150px}
+  .masthead{position:sticky;top:0;z-index:40;transition:box-shadow .25s}
+  .masthead.is-stuck{box-shadow:0 4px 16px rgb(23 42 82 / .12)}
+  .tabs{position:relative;z-index:30}
+  /* The section links float just below the masthead as a light-blue bar,
+     with a gap so the two bars read as separate. */
+  .on-this-page{top:calc(var(--mast-h) + 12px);margin:20px var(--gutter) 0;padding:6px;border:1px solid var(--tint-edge);border-radius:var(--radius);
+    background:transparent;box-shadow:none;overflow:visible}
+  /* The bar's own light-blue fill and shadow, layered above the strip. */
+  .on-this-page::after{content:"";position:absolute;z-index:-1;inset:-1px;border:1px solid var(--tint-edge);border-radius:var(--radius);background:#dceaf6;box-shadow:var(--shadow-2);pointer-events:none}
+  /* A solid strip behind the floating bar fills the gap under the masthead,
+     so page content doesn't show through between the two bars. */
+  .on-this-page::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;transform:translateX(-50%);top:-13px;bottom:-13px;background:var(--paper);pointer-events:none}
   .tab-menu{display:flex;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);clip-path:inset(0 0 100% 0 round var(--radius));
     transition:opacity .18s ease-in,transform .18s ease-in,clip-path .2s ease-in,visibility 0s linear .2s}
   .tab.is-open .tab-menu,html:not(.js) .tab:hover .tab-menu,html:not(.js) .tab:focus-within .tab-menu{
@@ -477,8 +489,10 @@ main > .body-section:first-child{border-top:none}
 .js .reveal.is-visible .stagger > .row:hover{transform:translateY(-3px)}
 
 /* "More" links: an underline slides in and the arrow nudges forward. */
-.more{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;text-decoration-color:transparent;transition:text-decoration-color .25s,text-underline-offset .25s}
-.more:hover{text-decoration-color:currentColor;text-underline-offset:3px}
+.more{position:relative;display:inline-block;padding-bottom:3px}
+.more::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s ease-out}
+.more:hover{text-decoration:none}
+.more:hover::after,.more:focus-visible::after{transform:scaleX(1)}
 
 /* Buttons respond when pressed. */
 .btn-apply:active,.cta:active,.pillar:active,.link-list a:active,.on-this-page a:active,.arrows button:active{transform:scale(.97)}
