@@ -654,3 +654,17 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
      pushing the bar wider than the page. */
   .on-this-page a{white-space:normal;text-align:center;min-width:0;line-height:1.25}
 }
+
+/* Header logos: Hoggard V, a dividing line, then the IB World School logo. */
+.brand{gap:16px}
+.brand-logos{display:flex;align-items:center;gap:14px;flex:none}
+.brand-logos img{display:block;height:46px;width:auto}
+.logo-divider{width:2px;height:38px;border-radius:1px;background:var(--tint-edge)}
+.brand:hover .logo-hoggard{transform:rotate(-4deg)}
+.logo-hoggard{transition:transform .3s}
+@media (max-width:520px){
+  .brand{gap:10px}
+  .brand-logos{gap:10px}
+  .brand-logos img{height:38px}
+  .logo-divider{height:30px}
+}
