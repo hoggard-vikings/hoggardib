@@ -100,7 +100,7 @@ def render_footer():
 <div class="how"><a href="mailto:mary.lillge@nhcs.net" style="font-weight:700">mary.lillge@nhcs.net</a><span>910-350-2072 Extension 72405</span></div>
 </section>
 <footer class="site-footer">
-<div class="col about"><b>Hoggard IB</b><span>Mary Lillge, IB Coordinator</span><a class="u" href="mailto:mary.lillge@nhcs.net">mary.lillge@nhcs.net</a><span>910-350-2072 Ext. 72405</span><a class="ig" href="{INSTAGRAM_URL}">Instagram ↗</a></div>
+<div class="col about"><b>Hoggard IB</b><span>Mary Lillge, IB Coordinator</span><a class="u" href="mailto:mary.lillge@nhcs.net">mary.lillge@nhcs.net</a><span>910-350-2072 Ext. 72405</span><a class="ig" href="{INSTAGRAM_URL}">@hoggardib on Instagram ↗</a></div>
 {''.join(cols)}
 </footer>
 <div class="legal">For information related to discrimination and harassment, see NHCS policies <a href="https://www.boardpolicyonline.com/bl/?b=hanover_county_new&amp;s=924410">1710</a> - Discrimination and Harassment Prohibited by Federal Law and <a href="https://www.boardpolicyonline.com/bl/?b=hanover_county_new&amp;s=924430">1725</a> - Title IX Sexual Harassment.</div>

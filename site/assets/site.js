@@ -63,6 +63,47 @@ document.documentElement.classList.add('js');
     Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty('--i', Math.min(i, 10)); });
   });
 
+  // Photo slideshows ([data-slideshow]): one full-size photo at a time, slowly
+  // cross-fading to the next. Small dots let visitors jump to a photo. Pauses
+  // while hovered, off screen or in a background tab, and never auto-advances
+  // for visitors who ask for reduced motion.
+  document.querySelectorAll('[data-slideshow]').forEach(function (root) {
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.slide'));
+    if (slides.length < 2) { if (slides[0]) slides[0].classList.add('is-active'); return; }
+    var current = 0, paused = false, onScreen = true, timer;
+    var interval = parseInt(root.getAttribute('data-interval'), 10) || 5000;
+    var dots = document.createElement('div');
+    dots.className = 'slideshow-dots';
+    var buttons = slides.map(function (s, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Photo ' + (i + 1) + ' of ' + slides.length);
+      b.addEventListener('click', function () { show(i); restart(); });
+      dots.appendChild(b);
+      return b;
+    });
+    root.appendChild(dots);
+    function show(i) {
+      current = (i + slides.length) % slides.length;
+      slides.forEach(function (s, j) { s.classList.toggle('is-active', j === current); s.setAttribute('aria-hidden', String(j !== current)); });
+      buttons.forEach(function (b, j) { b.setAttribute('aria-current', String(j === current)); });
+    }
+    function restart() {
+      clearInterval(timer);
+      timer = setInterval(function () {
+        if (!reduceMotion && !paused && onScreen && !document.hidden) show(current + 1);
+      }, interval);
+    }
+    root.addEventListener('mouseenter', function () { paused = true; });
+    root.addEventListener('mouseleave', function () { paused = false; });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; }).observe(root);
+    }
+    root.classList.add('is-ready');
+    show(0);
+    restart();
+  });
+
   // Rotating carousels ([data-rotator]): one item in the centre, its
   // neighbours smaller and fainter on each side, turning slowly on their own.
   // Pauses while hovered, focused, off screen or in a background tab; never
