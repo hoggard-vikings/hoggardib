@@ -139,9 +139,10 @@ document.documentElement.classList.add('js');
     window.addEventListener('resize', overlap);
   }
 
-  // Homepage feed: "Latest" items and Instagram posts come from a Google Sheet
-  // (an Apps Script web app — see tools/README-homepage-feed.md). If the feed
-  // isn't set or can't be reached, the defaults already in the page stay put.
+  // Homepage feed: "Latest" items and Instagram posts come from
+  // data/homepage.json, which the Google Sheet's Apps Script publishes to the
+  // repo (see tools/README-homepage-feed.md). If it can't be read, the
+  // defaults already in the page stay put.
   var feedSection = document.querySelector('[data-feed]');
   var feedUrl = feedSection && feedSection.getAttribute('data-feed');
   if (feedUrl && window.fetch) {
@@ -157,7 +158,7 @@ document.documentElement.classList.add('js');
     };
     var controller = window.AbortController ? new AbortController() : null;
     var timeout = setTimeout(function () { if (controller) controller.abort(); }, 6000);
-    fetch(feedUrl, controller ? { signal: controller.signal } : {})
+    fetch(feedUrl, controller ? { signal: controller.signal, cache: 'no-cache' } : { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('feed ' + r.status); return r.json(); })
       .then(function (data) {
         clearTimeout(timeout);
