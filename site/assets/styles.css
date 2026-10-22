@@ -105,12 +105,16 @@ a:hover{text-decoration:underline}
 }
 
 /* Homepage hero */
-.hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;padding:24px var(--gutter) 0}
-/* Copy sits at the top, key numbers along the bottom, so the block is filled. */
-.hero-main{grid-column:span 7;min-width:0;background:var(--blue);color:#fff;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;gap:36px;min-height:clamp(440px,64vh,620px)}
+/* The student photo spans the full width behind the hero, slightly blurred and
+   dimmed; the blue information card (3:2, like the photo) floats on the left. */
+.hero{position:relative;overflow:hidden;background:var(--ink)}
+.hero-bg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);object-fit:cover;object-position:center 40%;filter:blur(3px);transform:scale(1.02)}
+.hero::after{content:"";position:absolute;inset:0;background:rgb(23 42 82 / .32);pointer-events:none}
+.hero-inner{position:relative;z-index:1;display:flex;align-items:center;min-height:clamp(520px,72vh,740px);padding:56px var(--gutter) 80px}
+.hero-main{width:min(660px,58%);aspect-ratio:3/2;min-width:0;background:var(--blue);color:#fff;padding:36px 44px;display:flex;flex-direction:column;justify-content:center;gap:26px;box-shadow:var(--shadow-3)}
 .hero-copy{display:flex;flex-direction:column;gap:18px}
 .hero-main .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
-.hero-main h1{margin:0;font-size:clamp(38px,4.2vw,60px);line-height:1;font-weight:800;letter-spacing:-.03em;max-width:12ch}
+.hero-main h1{margin:0;font-size:clamp(34px,3.4vw,50px);line-height:1.02;font-weight:800;letter-spacing:-.03em}
 .hero-main p{margin:0;font-size:19px;line-height:1.5;max-width:480px;color:var(--on-blue-soft)}
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .cta.ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgb(255 255 255 / .55)}
@@ -119,11 +123,9 @@ a:hover{text-decoration:underline}
 .hero-stats div{display:flex;flex-direction:column;gap:4px}
 .hero-stats b{font-size:clamp(28px,2.8vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1;color:#fff}
 .hero-stats span{font-size:14px;line-height:1.4;color:var(--on-blue-soft)}
-/* The photo fills the full height of the blue block. */
-.hero-side{grid-column:span 5;display:grid;grid-template-rows:1fr}
-.hero-side .placeholder{min-height:100%}
-/* The four pillars sit on their own raised white panel below the hero. */
-.pillars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:28px var(--gutter) 48px;padding:12px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-2)}
+/* The four pillars sit on a raised white panel: about a quarter of it
+   overlaps the bottom of the photo, the rest sits below. */
+.pillars{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:-24px var(--gutter) 48px;padding:12px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-2)}
 .pillar{background:var(--ink);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .2s}
 .pillar:hover{background:var(--blue);text-decoration:none}
 .pillar span span{display:block}
@@ -272,10 +274,9 @@ main > .body-section:first-child{border-top:none}
 }
 @media (max-width:860px){
   :root{--gutter:16px;--section-y:44px;--jump-offset:64px}
-  .hero-main,.hero-side{grid-column:1/-1}
-  .hero-main{min-height:300px;padding:28px 24px}
-  .hero-side .placeholder{min-height:220px}
-  .pillars{margin:20px var(--gutter) 36px;padding:8px}
+  .hero-inner{min-height:0;padding:40px var(--gutter) 64px}
+  .hero-main{width:100%;aspect-ratio:auto;padding:28px 24px}
+  .pillars{margin:-36px var(--gutter) 36px;padding:8px}
   .split-7-5,.section.latest,.contact-band{grid-template-columns:1fr}
   .contact-band .how{text-align:left}
   .site-footer{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -374,7 +375,7 @@ main > .body-section:first-child{border-top:none}
 .dots button{border-radius:2px}
 
 /* Boxes */
-.hero-main,.hero-side .placeholder,.panel,.row,.carousel,.placeholder,
+.hero-main,.panel,.row,.carousel,.placeholder,
 .page-hero-inner,.contact-card,.box,.todo,.mission,.link-list a,.link-list .item,
 .compare > div,.person,.profile-card,.stat,.then-now > div:not(.arrow){border-radius:var(--radius)}
 .pillar,.chips span,.on-this-page a,.accordion details{border-radius:var(--radius-sm)}
@@ -398,7 +399,7 @@ main > .body-section:first-child{border-top:none}
 .link-list .item{--accent:var(--rule)}
 
 /* Soft shadows: boxes rest slightly raised off the page. */
-.hero-main,.hero-side .placeholder,.page-hero-inner,.panel,.row,.carousel,.profile-card,.stat,
+.page-hero-inner,.panel,.row,.carousel,.profile-card,.stat,
 .person,.compare > div,.then-now > div:not(.arrow),.contact-card,.box,.mission,.link-list a,
 .link-list .item,.accordion details,.table-wrap,.embed,.contact-band,.chips span{box-shadow:var(--shadow-1)}
 .table-wrap,.embed{border-color:transparent}
@@ -456,7 +457,6 @@ main > .body-section:first-child{border-top:none}
 .hero-main h1{animation:rise .7s .05s cubic-bezier(.2,.7,.2,1) both}
 .hero-main p{animation:rise .7s .2s cubic-bezier(.2,.7,.2,1) both}
 .hero-main{animation:fade .5s both}
-.hero-side{animation:fade .8s .15s both}
 .pillars{animation:rise .7s .3s cubic-bezier(.2,.7,.2,1) both}
 .page-hero-inner{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
 .page-hero-inner h1{animation:rise .6s .08s cubic-bezier(.2,.7,.2,1) both}
@@ -485,7 +485,7 @@ main > .body-section:first-child{border-top:none}
 .btn-apply,.cta,.on-this-page a,.arrows button{transition:background .2s,box-shadow .2s,transform .12s}
 
 @media (prefers-reduced-motion:reduce){
-  .hero-main,.hero-main h1,.hero-main p,.hero-side,.pillars,.page-hero-inner,.page-hero-inner h1,
+  .hero-main,.hero-main h1,.hero-main p,.pillars,.page-hero-inner,.page-hero-inner h1,
   .accordion details[open] .acc-body{animation:none}
   .js .reveal .stagger > *{opacity:1;transform:none;transition:none}
   .tab-menu,.tab-menu a{transition:none!important;transform:none!important}
@@ -585,3 +585,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
    cut the strip off cleanly. */
 .profile-card,.stat,.person,.compare > div,.trait{border-top-width:0}
 .box,.mission,.link-list a,.link-list .item,.accordion details[open]{border-left-width:0}
+
+/* Hero card shadow sits above the general box-shadow rules. */
+.hero-main{box-shadow:var(--shadow-3)}
+.hero-bg{animation:fade 1s both}
+@media (prefers-reduced-motion:reduce){.hero-bg{animation:none}}
+@media (max-width:1000px){.pillars{margin-top:-40px}}
+
+/* Menus under the last two tabs open toward the left so they stay on screen. */
+.tab:nth-last-child(-n+2) .tab-menu{left:auto;right:0}

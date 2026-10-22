@@ -63,6 +63,20 @@ document.documentElement.classList.add('js');
     Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty('--i', Math.min(i, 10)); });
   });
 
+  // Homepage: the pillar panel overlaps the bottom of the hero photo by a
+  // quarter of its own height (it wraps to more rows on smaller screens).
+  var pillars = document.querySelector('.hero + .pillars');
+  var heroInner = document.querySelector('.hero-inner');
+  if (pillars && heroInner) {
+    var overlap = function () {
+      var q = Math.round(pillars.offsetHeight / 4);
+      pillars.style.marginTop = -q + 'px';
+      heroInner.style.paddingBottom = (q + (desktop.matches ? 56 : 32)) + 'px';
+    };
+    overlap();
+    window.addEventListener('resize', overlap);
+  }
+
   // Photo slideshows ([data-slideshow]): one full-size photo at a time, slowly
   // cross-fading to the next. Small dots let visitors jump to a photo. Pauses
   // while hovered, off screen or in a background tab, and never auto-advances
