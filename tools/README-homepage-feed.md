@@ -26,6 +26,7 @@ The homepage's two **Latest** items and three **Instagram** posts are edited in 
    - Property: `GITHUB_TOKEN`
    - Value: a personal access token that can write to `hoggard-vikings/hoggardib`. For a fine-grained token, that's **Contents: Read and write** on this repo. For a classic token, it's the **repo** scope.
 4. **Turn on publishing.** Reload the sheet. A **Website** menu appears. Choose **Website → Set up automatic publishing** and approve the permission prompt. This publishes once straight away and then on every edit.
+5. **Check it.** Choose **Website → Check sheet** to see exactly what the script found in each tab and what it will publish.
 
 The token lives only in Script Properties, not in the code. It's visible only to people who can edit the sheet's script.
 
@@ -41,6 +42,9 @@ The token lives only in Script Properties, not in the code. It's visible only to
 - **If the file can't be read,** the homepage falls back to the Latest items built into the site and a "Follow @hoggardib" card.
 
 ## If something goes wrong
+
+- **Start with Website → Check sheet.** It names the tabs it found, which row it read as the header, which columns it matched, and how many rows are ticked.
+- **"Nothing was published":** no ticked rows were found, and the site keeps what it had. Check sheet says why: a tab that wasn't found, a missing column, or nothing ticked.
 
 - **"Add GITHUB_TOKEN…":** the token isn't set. See step 3.
 - **"GitHub said 401" or "403":** the token is wrong, expired or missing write access to the repo. Create a new one and replace the Script Property.
