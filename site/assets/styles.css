@@ -63,7 +63,9 @@ a:hover{text-decoration:underline}
 .tab:hover > a,.tab:focus-within > a,.tab.is-current > a{background:var(--blue)}
 .tab-menu{display:none;position:absolute;top:100%;left:0;min-width:100%;width:260px;background:#fff;box-shadow:0 12px 32px rgb(23 42 82 / .18);border-top:4px solid var(--blue);padding:6px 0;flex-direction:column}
 .tab:hover .tab-menu,.tab:focus-within .tab-menu{display:flex}
-.tab-menu a{padding:10px 18px;font-size:15px;font-weight:500}
+.tab-menu a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 18px;font-size:15px;font-weight:500}
+.tab-menu a::after{content:"→";color:var(--navy);font-weight:700;opacity:0;transform:translateX(-8px);transition:opacity .2s,transform .2s}
+.tab-menu a:hover::after,.tab-menu a:focus-visible::after{opacity:1;transform:none}
 .tab-menu a:hover{background:var(--tint);text-decoration:none}
 .tab-menu a[aria-current="page"]{font-weight:700;color:var(--blue)}
 
@@ -159,8 +161,15 @@ a:hover{text-decoration:underline}
 .arrows button{width:40px;height:40px;border:none;background:var(--ink);color:#fff;font-size:17px;cursor:pointer;font-family:inherit}
 
 .rows{display:flex;flex-direction:column;gap:20px}
-.rows .row{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,.85fr)}
-@media (max-width:860px){.rows .row{grid-template-columns:1fr}}
+.rows .row{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,.85fr);grid-template-rows:auto auto;row-gap:10px}
+.rows .row .eyebrow{grid-column:1;grid-row:1;align-self:end}
+.rows .row h3{grid-column:1;grid-row:2;align-self:start}
+.rows .row p{grid-column:2;grid-row:1 / 3;align-self:center}
+.rows .row .more{grid-column:3;grid-row:1 / 3;align-self:center;justify-self:start}
+@media (max-width:860px){
+  .rows .row{grid-template-columns:1fr;grid-template-rows:none}
+  .rows .row .eyebrow,.rows .row h3,.rows .row p,.rows .row .more{grid-column:1;grid-row:auto}
+}
 .row{background:var(--tint);padding:clamp(20px,2.4vw,32px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));column-gap:32px;row-gap:8px;align-items:center}
 .row.blue{background:var(--blue);color:#fff}
 .row.blue .eyebrow{color:#cfe5f4}
@@ -441,7 +450,12 @@ main > .body-section:first-child{border-top:none}
   .on-this-page::after{content:"";position:absolute;z-index:-1;inset:-1px;border:1px solid var(--tint-edge);border-radius:var(--radius);background:#dceaf6;box-shadow:var(--shadow-2);pointer-events:none}
   /* A solid strip behind the floating bar fills the gap under the masthead,
      so page content doesn't show through between the two bars. */
-  .on-this-page::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;transform:translateX(-50%);top:-13px;bottom:-13px;background:var(--paper);pointer-events:none}
+  /* Behind the floating bar, page content softly blurs and fades out as it
+     scrolls up under it (frosted, fading to nothing ~40px below the bar),
+     so there's no hard edge and no grey band. */
+  .on-this-page::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;transform:translateX(-50%);top:-13px;bottom:-44px;
+    background:rgb(255 255 255 / .72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 64px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 64px),transparent 100%);pointer-events:none}
   .tab-menu{display:flex;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);clip-path:inset(0 0 100% 0 round var(--radius));
     transition:opacity .18s ease-in,transform .18s ease-in,clip-path .2s ease-in,visibility 0s linear .2s}
   .tab.is-open .tab-menu,html:not(.js) .tab:hover .tab-menu,html:not(.js) .tab:focus-within .tab-menu{
