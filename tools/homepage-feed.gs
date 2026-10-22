@@ -15,7 +15,7 @@
  * Tabs: "Latest" (Show | Label | Title | Link) and "Instagram" (Show | Post link).
  * Tab and column names are matched loosely (any capitalisation, extra spaces,
  * header row anywhere in the first 10 rows). Only rows with Show ticked are
- * used, in sheet order: the first 2 Latest rows and the first 3 Instagram rows.
+ * used, in sheet order: the first 5 Latest rows and the first 3 Instagram rows.
  * If there's no Show column, every filled-in row counts as shown.
  */
 
@@ -123,7 +123,7 @@ function buildFeed_() {
   var latestTab = readTab_('Latest', ['title'], ['show', 'label', 'title', 'link']);
   var latest = latestTab.rows
     .filter(function (r) { return r.shown && String(r.title || '').trim(); })
-    .slice(0, 2)
+    .slice(0, 5)
     .map(function (r) {
       return { label: formatLabel_(r.label), title: String(r.title).trim(), link: normalizeLink_(r.link) };
     });

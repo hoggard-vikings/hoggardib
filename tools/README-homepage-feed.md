@@ -32,7 +32,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
 
 ## Day to day
 
-- **Latest:** the first 2 ticked rows are shown, top to bottom.
+- **Latest:** up to the first 5 ticked rows are shown, top to bottom.
   - **Label** can be text ("2025–2026") or a date cell, which shows as "DEC 4, 2025".
   - **Link** can be a full web address or a page on this site, such as `apply.html` or `newsletters.html`.
 - **Instagram:** paste the link of any public post (`instagram.com/p/…` or `instagram.com/reel/…`). The first 3 ticked rows are shown.

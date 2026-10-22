@@ -180,10 +180,11 @@ document.documentElement.classList.add('js');
           var t = document.createElement('span'); t.className = 't'; t.textContent = it.title;
           a.appendChild(d); a.appendChild(t);
           return a;
-        }).filter(Boolean).slice(0, 2);
+        }).filter(Boolean).slice(0, 5);
         if (list && items.length) {
           list.textContent = '';
           items.forEach(function (a) { list.appendChild(a); });
+          list.setAttribute('data-count', items.length); // lays out 1–5 cards evenly
         }
         var grid = feedSection.querySelector('[data-feed-instagram]');
         var posts = (data.instagram || []).map(instagramLink).filter(Boolean).slice(0, 3);
