@@ -180,15 +180,27 @@ a:hover{text-decoration:underline}
 .split-7-5{display:grid;grid-template-columns:7fr 5fr;gap:8px}
 .split-7-5 .placeholder{min-height:300px}
 
-.section.latest{display:grid;grid-template-columns:5fr 7fr;gap:40px}
+.section.latest{display:flex;flex-direction:column;gap:48px}
 .latest h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.025em}
-.latest-col{display:flex;flex-direction:column;gap:14px}
-.news-item{border-top:2px solid var(--ink);padding:14px 0;display:flex;flex-direction:column;gap:4px}
-.news-item .d{font-size:12px;font-weight:700;color:var(--blue)}
-.news-item .t{font-size:18px;font-weight:700}
+.latest-block,.insta-block{display:flex;flex-direction:column;gap:16px}
+/* Latest: items side by side as cards. */
+.news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.news-item{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:#fff;border:1px solid var(--tint-edge);border-top-width:0;border-radius:var(--radius);box-shadow:var(--shadow-1);transition:transform .25s,box-shadow .25s}
+.news-item::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ink)}
+.news-item:hover{text-decoration:none;transform:translateY(-3px);box-shadow:var(--shadow-2)}
+.news-item .d{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--blue)}
+.news-item .t{font-size:19px;font-weight:700}
+.news-item::after{content:"→";position:absolute;right:20px;bottom:18px;color:var(--sky);font-weight:700;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s}
+.news-item:hover::after{opacity:1;transform:none}
+/* Instagram: three embedded posts. */
 .insta-head{display:flex;justify-content:space-between;align-items:baseline}
-.insta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.insta-grid .placeholder{aspect-ratio:1;padding:10px;font-size:11px}
+.insta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+.insta-follow{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;padding:22px 24px;border-radius:var(--radius);background:var(--tint);border:1px solid var(--tint-edge);box-shadow:var(--shadow-1);transition:transform .25s,box-shadow .25s}
+.insta-follow:hover{text-decoration:none;transform:translateY(-2px);box-shadow:var(--shadow-2)}
+.insta-follow .t{font-size:19px;font-weight:800}
+.insta-follow .s{font-size:15px;color:var(--muted)}
+.insta-post{min-width:0}
+.insta-post .instagram-media{margin:0!important;min-width:0!important;max-width:none!important;width:100%!important;border-radius:var(--radius)!important;box-shadow:var(--shadow-1)!important;border:1px solid var(--tint-edge)!important}
 
 /* Contact band + footer (every page) */
 .contact-band{margin:0;padding:36px var(--gutter);background:var(--blue);color:#fff;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end}
@@ -286,7 +298,9 @@ main > .body-section:first-child{border-top:none}
   .hero-inner{min-height:0;padding:40px var(--gutter) 64px}
   .hero-main{width:100%;aspect-ratio:auto;padding:28px 24px}
   .pillars{margin:-36px var(--gutter) 36px;padding:8px}
-  .split-7-5,.section.latest,.contact-band{grid-template-columns:1fr}
+  .split-7-5,.contact-band{grid-template-columns:1fr}
+  .news-list{grid-template-columns:1fr}
+  .insta-grid{grid-template-columns:1fr}
   .contact-band .how{text-align:left}
   .site-footer{grid-template-columns:repeat(2,minmax(0,1fr))}
   .menu-toggle{display:block}
@@ -705,3 +719,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 #service .two-up .panel.tall,#service .slideshow{min-height:400px}
 .slideshow.tall{width:100%;max-width:900px;aspect-ratio:16/10;min-height:0}
 @media (max-width:860px){#service .two-up .panel.tall{min-height:0}#service .slideshow{min-height:320px}}
+
+@media (min-width:861px) and (max-width:1000px){.insta-grid.has-posts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Before Instagram's embed loads (or if it's blocked), each post shows as a tidy link card. */
+.insta-post blockquote.instagram-media{background:#fff!important;padding:28px 20px!important;text-align:center;font-weight:700}
+.insta-post blockquote.instagram-media a{color:var(--navy);text-decoration:underline;text-underline-offset:3px}

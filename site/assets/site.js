@@ -139,6 +139,76 @@ document.documentElement.classList.add('js');
     window.addEventListener('resize', overlap);
   }
 
+  // Homepage feed: "Latest" items and Instagram posts come from a Google Sheet
+  // (an Apps Script web app — see tools/README-homepage-feed.md). If the feed
+  // isn't set or can't be reached, the defaults already in the page stay put.
+  var feedSection = document.querySelector('[data-feed]');
+  var feedUrl = feedSection && feedSection.getAttribute('data-feed');
+  if (feedUrl && window.fetch) {
+    var safeLink = function (href) {
+      href = String(href || '').trim();
+      if (/^https?:\/\//i.test(href)) return href;
+      if (/^[a-z0-9][a-z0-9\-_.\/]*\.html(#[\w\-]+)?$/i.test(href) || /^#[\w\-]+$/.test(href)) return href;
+      return null;
+    };
+    var instagramLink = function (href) {
+      var m = String(href || '').trim().match(/^https?:\/\/(?:www\.)?instagram\.com\/(p|reel|tv)\/([\w\-]+)/i);
+      return m ? 'https://www.instagram.com/' + m[1].toLowerCase() + '/' + m[2] + '/' : null;
+    };
+    var controller = window.AbortController ? new AbortController() : null;
+    var timeout = setTimeout(function () { if (controller) controller.abort(); }, 6000);
+    fetch(feedUrl, controller ? { signal: controller.signal } : {})
+      .then(function (r) { if (!r.ok) throw new Error('feed ' + r.status); return r.json(); })
+      .then(function (data) {
+        clearTimeout(timeout);
+        var list = feedSection.querySelector('[data-feed-latest]');
+        var items = (data.latest || []).map(function (it) {
+          var href = safeLink(it.link);
+          if (!href || !it.title) return null;
+          var a = document.createElement('a');
+          a.className = 'news-item';
+          a.href = href;
+          if (/^https?:/i.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+          var d = document.createElement('span'); d.className = 'd'; d.textContent = it.label || '';
+          var t = document.createElement('span'); t.className = 't'; t.textContent = it.title;
+          a.appendChild(d); a.appendChild(t);
+          return a;
+        }).filter(Boolean).slice(0, 2);
+        if (list && items.length) {
+          list.textContent = '';
+          items.forEach(function (a) { list.appendChild(a); });
+        }
+        var grid = feedSection.querySelector('[data-feed-instagram]');
+        var posts = (data.instagram || []).map(instagramLink).filter(Boolean).slice(0, 3);
+        if (grid && posts.length) {
+          grid.textContent = '';
+          grid.classList.add('has-posts');
+          posts.forEach(function (url) {
+            var cell = document.createElement('div');
+            cell.className = 'insta-post';
+            var q = document.createElement('blockquote');
+            q.className = 'instagram-media';
+            q.setAttribute('data-instgrm-permalink', url);
+            q.setAttribute('data-instgrm-version', '14');
+            var a = document.createElement('a');
+            a.href = url; a.target = '_blank'; a.rel = 'noopener';
+            a.textContent = 'View this post on Instagram';
+            q.appendChild(a);
+            cell.appendChild(q);
+            grid.appendChild(cell);
+          });
+          if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+          else {
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.instagram.com/embed.js';
+            document.body.appendChild(s);
+          }
+        }
+      })
+      .catch(function () { clearTimeout(timeout); /* keep the built-in defaults */ });
+  }
+
   // Photo slideshows ([data-slideshow]): one full-size photo at a time, slowly
   // cross-fading to the next. Small dots let visitors jump to a photo. Pauses
   // while hovered, off screen or in a background tab, and never auto-advances

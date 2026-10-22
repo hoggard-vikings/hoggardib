@@ -21,6 +21,10 @@ PARTIALS = ROOT / "src" / "partials"
 OUT = ROOT / "site"
 
 INSTAGRAM_URL = "https://www.instagram.com/hoggardib/"
+# Apps Script web app (/exec URL) that serves the homepage "Latest" items and
+# Instagram posts from a Google Sheet. See tools/README-homepage-feed.md.
+# Leave empty to use the defaults built into src/pages/index.html.
+FEED_URL = ""
 
 # slug -> page title
 PAGES = {
@@ -149,7 +153,7 @@ def external_links_new_tab(page):
 def render_page(slug, body):
     is_home = slug == "index"
     title = "Hoggard IB · John T. Hoggard High School" if is_home else f"{PAGES[slug]} · Hoggard IB"
-    body = render_embeds(render_todos(render_includes(body))).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL)
+    body = render_embeds(render_todos(render_includes(body))).replace("{{INSTAGRAM_URL}}", INSTAGRAM_URL).replace("{{FEED_URL}}", FEED_URL)
     if not is_home:
         tab = tab_of(slug)
         # Section jump links come from the <section id=… data-title=…> blocks.
