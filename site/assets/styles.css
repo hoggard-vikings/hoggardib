@@ -333,13 +333,20 @@ main > .body-section:first-child{border-top:none}
 .btn-apply,.cta{color:var(--ink);transition:background .2s,box-shadow .2s}
 .btn-apply:hover,.cta:hover{background:#74b3dc;text-decoration:none;box-shadow:0 6px 18px rgb(32 57 109 / .18)}
 
-/* Tab bar: the hovered / current tab is a rounded pill inside the bar. */
-.tabs{padding-top:6px;padding-bottom:6px;gap:4px}
-.tab > a,.tab:first-child > a{border:none;border-radius:var(--radius-sm);padding:10px clamp(10px,1.2vw,16px)}
-.tab:hover > a,.tab:focus-within > a{background:rgb(255 255 255 / .1)}
-.tab.is-current > a{background:var(--sky);color:var(--ink)}
-.tab.is-current > a::after{color:var(--ink)}
+/* Tab bar: casts a shadow onto the page. The section you're in is a lighter
+   tab with a light-blue underline; hovering a tab grows the underline in. */
+.tabs{padding-top:6px;padding-bottom:6px;gap:4px;box-shadow:0 6px 18px rgb(23 42 82 / .28)}
+.tab > a,.tab:first-child > a{position:relative;border:none;border-radius:var(--radius-sm);padding:11px clamp(10px,1.2vw,16px) 13px;color:#dbe4f0;transition:background .2s,color .2s}
+.tab > a::before{content:"";position:absolute;left:12px;right:12px;bottom:4px;height:3px;border-radius:2px;background:var(--sky);transform:scaleX(0);transition:transform .25s ease-out}
+.tab > a::after{transition:transform .25s}
+.tab:hover > a,.tab.is-open > a{background:rgb(255 255 255 / .08);color:#fff}
+.tab:hover > a::before,.tab.is-open > a::before{transform:scaleX(.5)}
+.tab.is-open > a::after{transform:rotate(180deg)}
+.tab.is-current > a{background:var(--navy);color:#fff;box-shadow:inset 0 1px 0 rgb(255 255 255 / .08)}
+.tab.is-current > a::before{transform:scaleX(1)}
+.tab.is-current > a::after{color:var(--sky)}
 .tab-menu{top:calc(100% + 6px);border-top:none;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-3);padding-top:10px}
+.tab-menu a[aria-current="page"]{background:var(--tint);box-shadow:inset 3px 0 0 var(--sky)}
 
 /* Heading accents and other thin bars get rounded ends, in light blue. */
 .section-head .eyebrow::before,.body-section > h2::before{background:var(--sky);border-radius:2px}
@@ -355,18 +362,16 @@ main > .body-section:first-child{border-top:none}
 .accordion details{overflow:hidden;border-left:none}
 .accordion .acc-body{border:none;border-top:1px solid var(--rule)}
 
-/* Accent lines run straight along an edge and fade out where the rounded
-   corners begin, instead of bending around them. */
+/* Accent lines run dead straight along an edge, right into the corners,
+   where the rounded edge of the box cuts them off. */
 .profile-card,.stat,.person,.compare > div,
-.box,.mission,.link-list a,.link-list .item,.accordion details{position:relative}
+.box,.mission,.link-list a,.link-list .item,.accordion details{position:relative;overflow:hidden}
 .profile-card,.stat,.person,.compare > div{border-top:none}
 .box,.mission,.link-list a,.link-list .item{border-left:none}
 .tab-menu::before,.profile-card::before,.stat::before,.person::before,.compare > div::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:4px;z-index:1;pointer-events:none;
-  background:linear-gradient(90deg,transparent 0,var(--accent,var(--sky)) var(--radius),var(--accent,var(--sky)) calc(100% - var(--radius)),transparent 100%)}
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;z-index:1;pointer-events:none;background:var(--accent,var(--sky))}
 .box::before,.mission::before,.link-list a::before,.link-list .item::before,.accordion details[open]::before{
-  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg,transparent 0,var(--accent,var(--sky)) var(--radius),var(--accent,var(--sky)) calc(100% - var(--radius)),transparent 100%)}
+  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;z-index:1;pointer-events:none;background:var(--accent,var(--sky))}
 .compare > div{--accent:var(--muted)}
 .compare > div.alt,.link-list a{--accent:var(--sky)}
 .link-list .item{--accent:var(--rule)}
@@ -393,27 +398,84 @@ main > .body-section:first-child{border-top:none}
 .link-list a{transition:background .2s,box-shadow .2s,transform .2s}
 .link-list a:hover{box-shadow:var(--shadow-2);transform:translateY(-1px)}
 
-/* Dropdown menus (desktop): unroll downward, links fade in one after another,
-   and the rest of the page dims behind the open menu. */
+/* Dropdown menus (desktop). site.js adds .is-open after a short hover pause;
+   without JavaScript, plain :hover still works. A closed (or closing) menu
+   ignores the mouse so it can't catch the cursor on its way down the page.
+   Open menus unroll downward, links fade in one after another, and the
+   rest of the page dims behind them. */
 @media (min-width:861px){
-  .tab::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px} /* hover bridge to the menu */
-  .tab-menu{display:flex;opacity:0;visibility:hidden;transform:translateY(-8px);clip-path:inset(0 0 100% 0 round var(--radius));
-    transition:opacity .22s ease-out,transform .22s ease-out,clip-path .26s ease-out,visibility 0s linear .26s}
-  .tab:hover .tab-menu,.tab:focus-within .tab-menu{opacity:1;visibility:visible;transform:none;clip-path:inset(0 0 0 0 round var(--radius));
-    transition:opacity .22s ease-out,transform .22s ease-out,clip-path .26s ease-out,visibility 0s}
+  /* The tab bar stays pinned to the top while scrolling. */
+  .tabs{position:sticky;top:0;z-index:30}
+  :root{--jump-offset:140px}
+  .on-this-page{top:58px}
+  .tab-menu{display:flex;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);clip-path:inset(0 0 100% 0 round var(--radius));
+    transition:opacity .18s ease-in,transform .18s ease-in,clip-path .2s ease-in,visibility 0s linear .2s}
+  .tab.is-open .tab-menu,html:not(.js) .tab:hover .tab-menu,html:not(.js) .tab:focus-within .tab-menu{
+    opacity:1;visibility:visible;pointer-events:auto;transform:none;clip-path:inset(0 0 0 0 round var(--radius));
+    transition:opacity .22s ease-out,transform .22s ease-out,clip-path .28s ease-out,visibility 0s}
   .tab-menu a{opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s,background .2s}
-  .tab:hover .tab-menu a,.tab:focus-within .tab-menu a{opacity:1;transform:none}
-  .tab:hover .tab-menu a:nth-child(2),.tab:focus-within .tab-menu a:nth-child(2){transition-delay:.04s}
-  .tab:hover .tab-menu a:nth-child(3),.tab:focus-within .tab-menu a:nth-child(3){transition-delay:.08s}
-  .tab:hover .tab-menu a:nth-child(4),.tab:focus-within .tab-menu a:nth-child(4){transition-delay:.12s}
-  .tab:hover .tab-menu a:nth-child(5),.tab:focus-within .tab-menu a:nth-child(5){transition-delay:.16s}
-  .tab:hover .tab-menu a:nth-child(n+6),.tab:focus-within .tab-menu a:nth-child(n+6){transition-delay:.2s}
-  body::after{content:"";position:fixed;inset:0;z-index:18;background:rgb(23 42 82 / .28);opacity:0;pointer-events:none;transition:opacity .25s}
-  body:has(.tab:hover, .tab:focus-within)::after{opacity:1}
+  .tab.is-open .tab-menu a,html:not(.js) .tab:hover .tab-menu a{opacity:1;transform:none}
+  .tab.is-open .tab-menu a:nth-child(2){transition-delay:.04s}
+  .tab.is-open .tab-menu a:nth-child(3){transition-delay:.08s}
+  .tab.is-open .tab-menu a:nth-child(4){transition-delay:.12s}
+  .tab.is-open .tab-menu a:nth-child(5){transition-delay:.16s}
+  .tab.is-open .tab-menu a:nth-child(n+6){transition-delay:.2s}
+  .tab-menu a:hover{padding-left:24px;transition:padding .2s,background .2s}
+  body::after{content:"";position:fixed;inset:0;z-index:18;background:rgb(23 42 82 / .3);opacity:0;pointer-events:none;transition:opacity .25s}
+  body.menu-open::after,html:not(.js) body:has(.tab:hover)::after{opacity:1}
 }
-@media (min-width:861px) and (prefers-reduced-motion:reduce){
-  .tab-menu,.tab-menu a{transition:none;transform:none}
+
+/* ------------------------------------------------------------------
+   Motion: the hero eases in on load, cards arrive one after another,
+   accordions slide open, buttons respond to presses.
+   ------------------------------------------------------------------ */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes drop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.hero-main h1{animation:rise .7s .05s cubic-bezier(.2,.7,.2,1) both}
+.hero-main p{animation:rise .7s .2s cubic-bezier(.2,.7,.2,1) both}
+.hero-main{animation:fade .5s both}
+.hero-side{animation:fade .8s .15s both}
+.pillars{animation:rise .7s .3s cubic-bezier(.2,.7,.2,1) both}
+.page-hero-inner{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.page-hero-inner h1{animation:rise .6s .08s cubic-bezier(.2,.7,.2,1) both}
+
+.js .reveal .stagger > *{opacity:0;transform:translateY(14px);transition:opacity .45s ease-out,transform .45s ease-out,box-shadow .2s,background .2s;transition-delay:calc(var(--i,0) * 60ms)}
+.js .reveal.is-visible .stagger > *{opacity:1;transform:none}
+.js .reveal.is-visible .stagger > *:hover{transition-delay:0s}
+
+.accordion details[open] .acc-body{animation:drop .3s ease-out}
+.accordion summary{transition:background .2s,color .2s}
+.accordion details:not([open]) summary:hover{background:var(--sky-soft)}
+
+/* Cards lift a little under the cursor. */
+.profile-card,.person,.stat,.panel,.row{transition:transform .25s,box-shadow .25s}
+.profile-card:hover,.person:hover,.stat:hover,.panel:hover,.row:hover{transform:translateY(-3px);box-shadow:var(--shadow-2)}
+.js .reveal.is-visible .stagger > .profile-card:hover,.js .reveal.is-visible .stagger > .person:hover,
+.js .reveal.is-visible .stagger > .stat:hover,.js .reveal.is-visible .stagger > .panel:hover,
+.js .reveal.is-visible .stagger > .row:hover{transform:translateY(-3px)}
+
+/* "More" links: an underline slides in and the arrow nudges forward. */
+.more{background:linear-gradient(currentColor,currentColor) 0 100% / 0 2px no-repeat;transition:background-size .25s;padding-bottom:2px}
+.more:hover{text-decoration:none;background-size:100% 2px}
+
+/* Buttons respond when pressed. */
+.btn-apply:active,.cta:active,.pillar:active,.link-list a:active,.on-this-page a:active,.arrows button:active{transform:scale(.97)}
+.btn-apply,.cta,.on-this-page a,.arrows button{transition:background .2s,box-shadow .2s,transform .12s}
+
+@media (prefers-reduced-motion:reduce){
+  .hero-main,.hero-main h1,.hero-main p,.hero-side,.pillars,.page-hero-inner,.page-hero-inner h1,
+  .accordion details[open] .acc-body{animation:none}
+  .js .reveal .stagger > *{opacity:1;transform:none;transition:none}
+  .tab-menu,.tab-menu a{transition:none!important;transform:none!important}
+  .profile-card:hover,.person:hover,.stat:hover,.panel:hover,.row:hover{transform:none}
 }
+
+/* Easier reading: slightly larger body text and more line spacing. */
+.prose{font-size:17px;line-height:1.7}
+.lede{font-size:18px}
+.faq .acc-body p{font-size:17px;line-height:1.7}
+.rq-list,.timeline > li{font-size:16px}
 
 /* Keyboard focus ring. */
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--sky);outline-offset:2px;border-radius:var(--radius-xs)}
@@ -423,7 +485,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .tab-menu,.tab:hover .tab-menu,.tab:focus-within .tab-menu{box-shadow:none;border-radius:0;padding-top:4px;background:transparent}
   .tab-menu a{color:#dbe4f0}
   .tab-menu a:hover{background:rgb(255 255 255 / .08)}
-  .tab-menu a[aria-current="page"]{color:var(--sky)}
+  .tab-menu a[aria-current="page"]{color:var(--sky);background:transparent;box-shadow:inset 3px 0 0 var(--sky)}
   .tab-menu::before{display:none}
   .contact-band{margin:32px var(--gutter);padding:24px}
 }

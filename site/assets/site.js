@@ -14,6 +14,55 @@ document.documentElement.classList.add('js');
     });
   }
 
+  // Tab dropdowns (desktop). A short pause before opening means sweeping the
+  // cursor across the tab bar doesn't pop menus open, and a short pause before
+  // closing lets the cursor cross the gap into the menu. Once one menu is open,
+  // moving to the next tab switches straight away.
+  var desktop = window.matchMedia('(min-width: 861px)');
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function setOpen(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.classList.toggle('is-open', on);
+      var a = t.querySelector(':scope > a');
+      if (a) a.setAttribute('aria-expanded', String(on));
+    });
+    document.body.classList.toggle('menu-open', !!tab);
+  }
+  function openTab() { return tabs.filter(function (t) { return t.classList.contains('is-open'); })[0]; }
+  tabs.forEach(function (tab) {
+    var openTimer, closeTimer;
+    var a = tab.querySelector(':scope > a');
+    if (a) { a.setAttribute('aria-haspopup', 'true'); a.setAttribute('aria-expanded', 'false'); }
+    tab.addEventListener('mouseenter', function () {
+      if (!desktop.matches) return;
+      clearTimeout(closeTimer);
+      if (openTab()) setOpen(tab);
+      else openTimer = setTimeout(function () { setOpen(tab); }, 140);
+    });
+    tab.addEventListener('mouseleave', function () {
+      clearTimeout(openTimer);
+      closeTimer = setTimeout(function () { if (tab.classList.contains('is-open')) setOpen(null); }, 220);
+    });
+    tab.addEventListener('focusin', function () { if (desktop.matches) setOpen(tab); });
+    tab.addEventListener('focusout', function (e) {
+      if (!tab.contains(e.relatedTarget) && tab.classList.contains('is-open')) setOpen(null);
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && openTab()) {
+      var a = openTab().querySelector(':scope > a');
+      setOpen(null);
+      if (a) a.focus();
+    }
+  });
+
+  // Cards inside a section come in one after another when it scrolls into view.
+  document.querySelectorAll('.profile-grid, .rows, .people, .link-list, .accordion, .stat-row, .chips, .compare, .two-up, .split-7-5').forEach(function (group) {
+    group.classList.add('stagger');
+    Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty('--i', Math.min(i, 10)); });
+  });
+
   document.querySelectorAll('[data-carousel]').forEach(function (root) {
     var slides = root.querySelectorAll('[data-slide]');
     var dots = root.querySelectorAll('.dots button');
