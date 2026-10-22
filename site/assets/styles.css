@@ -108,7 +108,7 @@ a:hover{text-decoration:underline}
 /* The student photo spans the full width behind the hero, slightly blurred and
    dimmed; the blue information card (3:2, like the photo) floats on the left. */
 .hero{position:relative;overflow:hidden;background:var(--ink)}
-.hero-bg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);object-fit:cover;object-position:center 40%;filter:blur(3px);transform:scale(1.02)}
+.hero-bg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);object-fit:cover;object-position:center 85%;filter:blur(3px);transform:scale(1.02)}
 .hero::after{content:"";position:absolute;inset:0;background:rgb(23 42 82 / .32);pointer-events:none}
 .hero-inner{position:relative;z-index:1;display:flex;align-items:center;min-height:clamp(520px,72vh,740px);padding:56px var(--gutter) 80px}
 .hero-main{width:min(660px,58%);aspect-ratio:3/2;min-width:0;background:var(--blue);color:#fff;padding:36px 44px;display:flex;flex-direction:column;justify-content:center;gap:26px;box-shadow:var(--shadow-3)}
