@@ -660,11 +660,21 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .brand-logos{display:flex;align-items:center;gap:14px;flex:none}
 .brand-logos img{display:block;height:46px;width:auto}
 .logo-divider{width:2px;height:38px;border-radius:1px;background:var(--tint-edge)}
-.brand:hover .logo-hoggard{transform:rotate(-4deg)}
-.logo-hoggard{transition:transform .3s}
 @media (max-width:520px){
   .brand{gap:10px}
   .brand-logos{gap:10px}
   .brand-logos img{height:38px}
   .logo-divider{height:30px}
 }
+
+/* A closing accordion item fades back to its closed colours as it folds up,
+   instead of staying dark and then switching abruptly at the end. */
+.accordion details.is-closing summary{background:var(--tint);color:var(--ink)}
+.accordion details.is-closing summary::after{transform:none;color:var(--blue)}
+.accordion details.is-closing::before{opacity:0}
+.accordion details::before{transition:opacity .2s}
+.accordion summary::after{transition:transform .25s,color .25s}
+
+/* Pages with only two or three section links: each link gets an equal share
+   of the bar with its label centred in it. */
+.on-this-page:not(:has(> a:nth-child(4))) > a{flex:1 1 0}

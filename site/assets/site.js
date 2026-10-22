@@ -67,6 +67,7 @@ document.documentElement.classList.add('js');
     d._target = open;
     if (reduceMotion || !d.animate) { d.open = open; d._target = undefined; return; }
     d.classList.add('is-animating');
+    d.classList.toggle('is-closing', !open);
     if (open) d.open = true;
     var end = open ? d.offsetHeight : summary.offsetHeight + (d.offsetHeight - d.clientHeight);
     d._anim = d.animate({ height: [start + 'px', end + 'px'] }, { duration: open ? 320 : 260, easing: 'cubic-bezier(.2,.7,.2,1)' });
@@ -74,7 +75,7 @@ document.documentElement.classList.add('js');
     if (body && body.animate) body.animate({ opacity: open ? [0, 1] : [1, 0] }, { duration: open ? 320 : 200, easing: 'ease-out', fill: 'forwards' });
     d._anim.onfinish = function () {
       if (!open) d.open = false;
-      d.classList.remove('is-animating');
+      d.classList.remove('is-animating', 'is-closing');
       d._anim = null;
       d._target = undefined;
       if (body && body.getAnimations) body.getAnimations().forEach(function (a) { a.cancel(); });
