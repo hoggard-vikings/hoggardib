@@ -700,3 +700,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .page-hero-inner.has-photo .page-hero-text{padding:24px}
   .page-hero-photo{min-height:180px;max-height:220px}
 }
+
+/* CAS slideshows: a little taller so portrait photos crop less. */
+#service .two-up .panel.tall,#service .slideshow{min-height:400px}
+.slideshow.tall{width:100%;max-width:900px;aspect-ratio:16/10;min-height:0}
+@media (max-width:860px){#service .two-up .panel.tall{min-height:0}#service .slideshow{min-height:320px}}
