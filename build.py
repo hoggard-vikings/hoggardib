@@ -20,7 +20,6 @@ SRC = ROOT / "src" / "pages"
 PARTIALS = ROOT / "src" / "partials"
 OUT = ROOT / "site"
 
-APPLY_URL = "https://docs.google.com/forms/d/e/1FAIpQLScHrPXwm4frgHA5qEwlS2z1oS5kUXYG_OlUvzM4LeLVXiaA6g/viewform"
 INSTAGRAM_URL = "https://www.instagram.com/hoggardib/"
 
 # slug -> page title
@@ -177,7 +176,6 @@ def render_page(slug, body):
 <a class="brand" href="index.html"><span class="brand-mark">IB</span><span class="brand-text"><b>Hoggard IB</b><span>John T. Hoggard High School · Wilmington, NC</span></span></a>
 <div class="masthead-actions">
 <button class="menu-toggle" aria-controls="site-nav" aria-expanded="false">Menu</button>
-<a class="btn-apply" href="{APPLY_URL}">Apply <span aria-hidden="true">↗</span></a>
 </div>
 </div>
 {render_nav(slug)}

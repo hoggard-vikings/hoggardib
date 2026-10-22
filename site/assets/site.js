@@ -57,6 +57,54 @@ document.documentElement.classList.add('js');
     }
   });
 
+  // Accordions (FAQs, diploma routes, EE archive, subject groups, schedules…):
+  // each item glides open and closed, and only one item per group is open at a
+  // time — opening one closes whichever other one was open.
+  function animateDetails(d, open) {
+    var summary = d.querySelector('summary');
+    var start = d.offsetHeight; // mid-animation height if one is running
+    if (d._anim) { d._anim.cancel(); d._anim = null; }
+    d._target = open;
+    if (reduceMotion || !d.animate) { d.open = open; d._target = undefined; return; }
+    d.classList.add('is-animating');
+    if (open) d.open = true;
+    var end = open ? d.offsetHeight : summary.offsetHeight + (d.offsetHeight - d.clientHeight);
+    d._anim = d.animate({ height: [start + 'px', end + 'px'] }, { duration: open ? 320 : 260, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    var body = d.querySelector('.acc-body');
+    if (body && body.animate) body.animate({ opacity: open ? [0, 1] : [1, 0] }, { duration: open ? 320 : 200, easing: 'ease-out', fill: 'forwards' });
+    d._anim.onfinish = function () {
+      if (!open) d.open = false;
+      d.classList.remove('is-animating');
+      d._anim = null;
+      d._target = undefined;
+      if (body && body.getAnimations) body.getAnimations().forEach(function (a) { a.cancel(); });
+    };
+  }
+  function openDetails(d, animated) {
+    var group = d.parentElement;
+    Array.prototype.forEach.call(group.children, function (other) {
+      if (other !== d && other.tagName === 'DETAILS' && other.open) {
+        if (animated) animateDetails(other, false); else other.open = false;
+      }
+    });
+    if (animated) animateDetails(d, true); else d.open = true;
+  }
+  document.querySelectorAll('.accordion > details').forEach(function (d) {
+    var summary = d.querySelector('summary');
+    if (!summary) return;
+    summary.addEventListener('click', function (e) {
+      e.preventDefault();
+      // Clicking again mid-animation reverses it.
+      var willOpen = d._target === undefined ? !d.open : !d._target;
+      if (willOpen) openDetails(d, true); else animateDetails(d, false);
+    });
+  });
+  // Start each group with at most one item open.
+  document.querySelectorAll('.accordion').forEach(function (group) {
+    var open = group.querySelectorAll(':scope > details[open]');
+    for (var i = 1; i < open.length; i++) open[i].open = false;
+  });
+
   // Cards inside a section come in one after another when it scrolls into view.
   document.querySelectorAll('.profile-grid, .rows, .people, .link-list, .accordion, .stat-row, .chips, .compare, .two-up, .split-7-5').forEach(function (group) {
     group.classList.add('stagger');
@@ -246,7 +294,10 @@ document.documentElement.classList.add('js');
     var section = target.closest('section') || target;
     section.classList.add('is-visible');
     var details = target.closest('details');
-    if (details) details.open = true;
+    if (details && !details.open) {
+      if (details.parentElement.classList.contains('accordion')) openDetails(details, false);
+      else details.open = true;
+    }
     target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     history.pushState(null, '', '#' + target.id);
     whenScrollStops(function () { arrive(section); });

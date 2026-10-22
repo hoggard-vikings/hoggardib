@@ -453,7 +453,7 @@ main > .body-section:first-child{border-top:none}
   /* Behind the floating bar, page content softly blurs and fades out as it
      scrolls up under it (frosted, fading to nothing ~40px below the bar),
      so there's no hard edge and no grey band. */
-  .on-this-page::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;transform:translateX(-50%);top:-13px;bottom:-44px;
+  .on-this-page::before{content:"";position:absolute;z-index:-1;left:calc(-1px - var(--gutter));right:calc(-1px - var(--gutter));top:-13px;bottom:-44px;
     background:rgb(255 255 255 / .72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
     -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 64px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 64px),transparent 100%);pointer-events:none}
   .tab-menu{display:flex;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);clip-path:inset(0 0 100% 0 round var(--radius));
@@ -461,14 +461,16 @@ main > .body-section:first-child{border-top:none}
   .tab.is-open .tab-menu,html:not(.js) .tab:hover .tab-menu,html:not(.js) .tab:focus-within .tab-menu{
     opacity:1;visibility:visible;pointer-events:auto;transform:none;clip-path:inset(0 0 0 0 round var(--radius));
     transition:opacity .22s ease-out,transform .22s ease-out,clip-path .28s ease-out,visibility 0s}
-  .tab-menu a{opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s,background .2s}
+  /* Items glide right on hover and glide back when the cursor leaves. The
+     staggered entrance delay applies only to the fade-in, never the glide. */
+  .tab-menu a{opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s,background .2s,padding-left .28s cubic-bezier(.2,.7,.2,1)}
   .tab.is-open .tab-menu a,html:not(.js) .tab:hover .tab-menu a{opacity:1;transform:none}
-  .tab.is-open .tab-menu a:nth-child(2){transition-delay:.04s}
-  .tab.is-open .tab-menu a:nth-child(3){transition-delay:.08s}
-  .tab.is-open .tab-menu a:nth-child(4){transition-delay:.12s}
-  .tab.is-open .tab-menu a:nth-child(5){transition-delay:.16s}
-  .tab.is-open .tab-menu a:nth-child(n+6){transition-delay:.2s}
-  .tab-menu a:hover{padding-left:24px;transition:padding .2s,background .2s}
+  .tab.is-open .tab-menu a:nth-child(2){transition-delay:.04s,.04s,0s,0s}
+  .tab.is-open .tab-menu a:nth-child(3){transition-delay:.08s,.08s,0s,0s}
+  .tab.is-open .tab-menu a:nth-child(4){transition-delay:.12s,.12s,0s,0s}
+  .tab.is-open .tab-menu a:nth-child(5){transition-delay:.16s,.16s,0s,0s}
+  .tab.is-open .tab-menu a:nth-child(n+6){transition-delay:.2s,.2s,0s,0s}
+  .tab-menu a:hover{padding-left:24px}
   body::after{content:"";position:fixed;inset:0;z-index:18;background:rgb(23 42 82 / .3);opacity:0;pointer-events:none;transition:opacity .25s}
   body.menu-open::after,html:not(.js) body:has(.tab:hover)::after{opacity:1}
 }
@@ -491,7 +493,9 @@ main > .body-section:first-child{border-top:none}
 .js .reveal.is-visible .stagger > *{opacity:1;transform:none}
 .js .reveal.is-visible .stagger > *:hover{transition-delay:0s}
 
-.accordion details[open] .acc-body{animation:drop .3s ease-out}
+/* Without JavaScript, accordions still open with a quick drop-in. With it,
+   site.js animates the height open and closed instead. */
+html:not(.js) .accordion details[open] .acc-body{animation:drop .3s ease-out}
 .accordion summary{transition:background .2s,color .2s}
 .accordion details:not([open]) summary:hover{background:var(--sky-soft)}
 
@@ -622,3 +626,31 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* Menus under the last two tabs open toward the left so they stay on screen. */
 .tab:nth-last-child(-n+2) .tab-menu{left:auto;right:0}
+
+/* IB Diploma success rate: its own highlighted dark-blue panel. */
+.success-panel{background:var(--ink);color:#fff;border-radius:var(--radius);box-shadow:var(--shadow-2);padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:20px;position:relative;overflow:hidden}
+.success-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--sky)}
+.success-title{margin:0;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
+.success-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.success-grid div{display:flex;flex-direction:column;gap:6px;padding:14px 12px;border-radius:var(--radius-sm);background:rgb(255 255 255 / .06);border:1px solid rgb(255 255 255 / .1);transition:background .2s,transform .2s}
+.success-grid div:hover{background:rgb(255 255 255 / .12);transform:translateY(-2px)}
+.success-grid b{font-size:clamp(22px,2.2vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1}
+.success-grid span{font-size:13px;font-weight:700;color:var(--sky)}
+.success-grid div:last-child{background:var(--sky);border-color:var(--sky);color:var(--ink)}
+.success-grid div:last-child span{color:var(--ink)}
+@media (max-width:860px){.success-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:420px){.success-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Accordion contents are clipped while they animate open or closed. */
+.accordion details.is-animating{overflow:hidden}
+
+/* Section links: a little tighter on desktop so every page's links fit on one row. */
+@media (min-width:861px){
+  .on-this-page a{padding:10px 8px 13px;font-size:13.5px;gap:5px}
+  .on-this-page a::before{left:8px;right:8px}
+}
+@media (min-width:861px){
+  /* On narrower desktop screens, long labels wrap onto two lines rather than
+     pushing the bar wider than the page. */
+  .on-this-page a{white-space:normal;text-align:center;min-width:0;line-height:1.25}
+}
