@@ -24,7 +24,7 @@ INSTAGRAM_URL = "https://www.instagram.com/hoggardib/"
 # Apps Script web app (/exec URL) that serves the homepage "Latest" items and
 # Instagram posts from a Google Sheet. See tools/README-homepage-feed.md.
 # Leave empty to use the defaults built into src/pages/index.html.
-FEED_URL = ""
+FEED_URL = "https://script.google.com/macros/s/AKfycbz-DdvRsyv3HuiBMgZvSHWE6jWydXa6PTJxjf49gHrNXUgcUsZlyTAf3UPcf2Kev4u11w/exec"
 
 # slug -> page title
 PAGES = {
