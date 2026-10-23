@@ -213,6 +213,51 @@ document.documentElement.classList.add('js');
             document.body.appendChild(s);
           }
         }
+
+        // Newsletters page: every ticked newsletter, grouped by School year in
+        // the order the years first appear in the sheet.
+        var sourceName = function (href) {
+          if (!/^https?:/i.test(href)) return 'Hoggard IB';
+          var host = href.replace(/^https?:\/\//i, '').split(/[\/?#]/)[0].replace(/^www\./i, '').toLowerCase();
+          if (/(^|\.)smore\.com$/.test(host)) return 'Smore';
+          if (host === 'docs.google.com') return 'Google Docs';
+          if (host === 'drive.google.com') return 'Google Drive';
+          return host;
+        };
+        var nl = data.newsletters || {};
+        document.querySelectorAll('[data-newsletters]').forEach(function (box) {
+          var groups = [], byYear = {};
+          (nl[box.getAttribute('data-newsletters')] || []).forEach(function (it) {
+            var href = safeLink(it.link);
+            if (!href || !it.title) return;
+            var year = String(it.year || '').trim() || 'Other';
+            if (!byYear[year]) { byYear[year] = []; groups.push(year); }
+            byYear[year].push({ title: String(it.title), href: href });
+          });
+          if (!groups.length) return; // keep the built-in links
+          box.textContent = '';
+          groups.forEach(function (year) {
+            var h = document.createElement('h3');
+            h.textContent = year;
+            var list = document.createElement('div');
+            list.className = 'link-list';
+            byYear[year].forEach(function (it) {
+              var a = document.createElement('a');
+              a.href = it.href;
+              if (/^https?:/i.test(it.href)) { a.target = '_blank'; a.rel = 'noopener'; }
+              var outer = document.createElement('span');
+              outer.textContent = it.title;
+              var sub = document.createElement('span');
+              sub.className = 'sub';
+              sub.textContent = sourceName(it.href);
+              outer.appendChild(sub);
+              a.appendChild(outer);
+              list.appendChild(a);
+            });
+            box.appendChild(h);
+            box.appendChild(list);
+          });
+        });
       })
       .catch(function () { clearTimeout(timeout); /* keep the built-in defaults */ });
   }

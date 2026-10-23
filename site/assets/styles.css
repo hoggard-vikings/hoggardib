@@ -736,3 +736,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .news-list[data-count] {grid-template-columns:1fr}
   .news-list[data-count] > :nth-child(n){grid-column:auto}
 }
+
+/* Newsletters page: one group per school year. */
+.newsletter-list{display:flex;flex-direction:column;gap:14px}
+.newsletter-list h3:not(:first-child){margin-top:14px}

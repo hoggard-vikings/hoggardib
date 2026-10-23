@@ -12,10 +12,12 @@
  *   3. Reload the sheet, then Website → Set up automatic publishing (approve the prompt).
  *   4. Website → Check sheet shows exactly what will be published.
  *
- * Tabs: "Latest" (Show | Label | Title | Link) and "Instagram" (Show | Post link).
+ * Tabs: "Latest" (Show | Label | Title | Link), "Instagram" (Show | Post link),
+ *       "IB Newsletters" and "Pre-IB Newsletters" (Show | School year | Title | Link).
  * Tab and column names are matched loosely (any capitalisation, extra spaces,
  * header row anywhere in the first 10 rows). Only rows with Show ticked are
- * used, in sheet order: the first 5 Latest rows and the first 3 Instagram rows.
+ * used, in sheet order: the first 5 Latest rows, the first 3 Instagram rows,
+ * and every ticked newsletter (grouped by School year on the Newsletters page).
  * If there's no Show column, every filled-in row counts as shown.
  */
 
@@ -32,7 +34,8 @@ var COLUMNS = {
   label: ['label', 'date', 'when'],
   title: ['title', 'headline', 'name', 'text', 'event'],
   link: ['link', 'url', 'page', 'href'],
-  post: ['postlink', 'post', 'instagramlink', 'instagram', 'posturl', 'link', 'url']
+  post: ['postlink', 'post', 'instagramlink', 'instagram', 'posturl', 'link', 'url'],
+  year: ['schoolyear', 'year', 'term', 'yr']
 };
 
 // Website menu in the sheet.
@@ -66,10 +69,13 @@ function publishNow() {
 // Shows what the script found in each tab, without publishing.
 function checkSheet() {
   var feed = buildFeed_();
-  var lines = [feed.report.latest, '', feed.report.instagram, '', 'Would publish:'];
+  var lines = [feed.report.latest, '', feed.report.instagram, '', feed.report.ib, '', feed.report.preib, '', 'Would publish:'];
   feed.latest.forEach(function (it, i) { lines.push('  Latest ' + (i + 1) + ': ' + (it.label ? it.label + ' — ' : '') + it.title + '  →  ' + (it.link || '(no link)')); });
   feed.instagram.forEach(function (u, i) { lines.push('  Instagram ' + (i + 1) + ': ' + u); });
-  if (!feed.latest.length && !feed.instagram.length) lines.push('  Nothing — see the notes above.');
+  [['IB newsletter', feed.newsletters.ib], ['Pre-IB newsletter', feed.newsletters.preib]].forEach(function (g) {
+    g[1].forEach(function (it) { lines.push('  ' + g[0] + ' (' + (it.year || 'Other') + '): ' + it.title + '  →  ' + (it.link || '(no link)')); });
+  });
+  if (isEmpty_(feed)) lines.push('  Nothing — see the notes above.');
   SpreadsheetApp.getUi().alert(lines.join('\n'));
 }
 
@@ -80,10 +86,11 @@ function publish_(force) {
   lock.waitLock(30000);
   try {
     var feed = buildFeed_();
-    if (!feed.latest.length && !feed.instagram.length) {
-      return 'Nothing was published: no ticked rows were found.\n\n' + feed.report.latest + '\n\n' + feed.report.instagram;
+    if (isEmpty_(feed)) {
+      return 'Nothing was published: no ticked rows were found.\n\n' + feed.report.latest + '\n\n' + feed.report.instagram +
+        '\n\n' + feed.report.ib + '\n\n' + feed.report.preib;
     }
-    var content = JSON.stringify({ latest: feed.latest, instagram: feed.instagram });
+    var content = JSON.stringify({ latest: feed.latest, instagram: feed.instagram, newsletters: feed.newsletters });
     var props = PropertiesService.getScriptProperties();
     if (!force && props.getProperty('LAST_PUBLISHED') === content) return 'No changes to publish.';
 
@@ -98,9 +105,9 @@ function publish_(force) {
     var current = UrlFetchApp.fetch(url + '?ref=' + encodeURIComponent(GITHUB.branch), { headers: headers, muteHttpExceptions: true });
     if (current.getResponseCode() === 200) sha = JSON.parse(current.getContentText()).sha;
 
-    var body = JSON.stringify({ latest: feed.latest, instagram: feed.instagram, updated: new Date().toISOString() }, null, 2) + '\n';
+    var body = JSON.stringify({ latest: feed.latest, instagram: feed.instagram, newsletters: feed.newsletters, updated: new Date().toISOString() }, null, 2) + '\n';
     var payload = {
-      message: 'Update homepage Latest and Instagram from the Google Sheet',
+      message: 'Update Latest, Instagram and newsletters from the Google Sheet',
       content: Utilities.base64Encode(body, Utilities.Charset.UTF_8),
       branch: GITHUB.branch
     };
@@ -112,8 +119,9 @@ function publish_(force) {
     var code = res.getResponseCode();
     if (code !== 200 && code !== 201) return 'GitHub refused the update (' + code + '): ' + res.getContentText().slice(0, 300);
     props.setProperty('LAST_PUBLISHED', content);
-    return 'Published ' + feed.latest.length + ' Latest item(s) and ' + feed.instagram.length +
-      ' Instagram post(s). The website updates in a minute or two.';
+    return 'Published ' + feed.latest.length + ' Latest item(s), ' + feed.instagram.length + ' Instagram post(s), ' +
+      feed.newsletters.ib.length + ' IB newsletter(s) and ' + feed.newsletters.preib.length +
+      ' Pre-IB newsletter(s). The website updates in a minute or two.';
   } finally {
     lock.releaseLock();
   }
@@ -134,11 +142,36 @@ function buildFeed_() {
     .slice(0, 3)
     .map(function (r) { return String(r.post).trim(); });
 
+  var ibTab = readTab_('IB Newsletters', ['title'], ['show', 'year', 'title', 'link']);
+  var preibTab = readTab_('Pre-IB Newsletters', ['title'], ['show', 'year', 'title', 'link']);
+  var newsletters = { ib: newsletterRows_(ibTab), preib: newsletterRows_(preibTab) };
+
   return {
     latest: latest,
     instagram: instagram,
-    report: { latest: latestTab.report + '\n→ ' + latest.length + ' to publish.', instagram: instaTab.report + '\n→ ' + instagram.length + ' to publish.' }
+    newsletters: newsletters,
+    report: {
+      latest: latestTab.report + '\n→ ' + latest.length + ' to publish.',
+      instagram: instaTab.report + '\n→ ' + instagram.length + ' to publish.',
+      ib: ibTab.report + '\n→ ' + newsletters.ib.length + ' to publish.',
+      preib: preibTab.report + '\n→ ' + newsletters.preib.length + ' to publish.'
+    }
   };
+}
+
+// Every ticked newsletter, in sheet order (the page groups them by School year).
+function newsletterRows_(tab) {
+  return tab.rows
+    .filter(function (r) { return r.shown && String(r.title || '').trim(); })
+    .map(function (r) {
+      var year = r.year;
+      if (Object.prototype.toString.call(year) === '[object Date]' && !isNaN(year)) year = year.getFullYear();
+      return { year: String(year == null ? '' : year).trim(), title: String(r.title).trim(), link: normalizeLink_(r.link) };
+    });
+}
+
+function isEmpty_(feed) {
+  return !feed.latest.length && !feed.instagram.length && !feed.newsletters.ib.length && !feed.newsletters.preib.length;
 }
 
 // Finds a tab by name (any capitalisation / extra spaces), finds its header

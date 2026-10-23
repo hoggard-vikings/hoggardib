@@ -1,4 +1,4 @@
-# Homepage feed: "Latest" and Instagram from a Google Sheet
+# Site feed: Latest, Instagram and newsletters from a Google Sheet
 
 The homepage's two **Latest** items and three **Instagram** posts are edited in a Google Sheet. The sheet's Apps Script publishes them to the website. It uses a GitHub personal access token to write `site/data/homepage.json` into this repo, Vercel redeploys, and the homepage reads that file.
 
@@ -19,6 +19,12 @@ The homepage's two **Latest** items and three **Instagram** posts are edited in 
    |---|---|
    | ☑ | https://www.instagram.com/p/XXXXXXXX/ |
 
+   **IB Newsletters** and **Pre-IB Newsletters** (same columns in both)
+
+   | Show | School year | Title | Link |
+   |---|---|---|---|
+   | ☑ | 2025–2026 | October newsletter | https://app.smore.com/n/9bj32 |
+
    Make the **Show** column checkboxes (Insert → Checkbox).
 
 2. **Add the script.** Go to Extensions → Apps Script, replace everything there with the contents of `homepage-feed.gs`, and save.
@@ -36,6 +42,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
   - **Label** can be text ("2025–2026") or a date cell, which shows as "DEC 4, 2025".
   - **Link** can be a full web address or a page on this site, such as `apply.html` or `newsletters.html`.
 - **Instagram:** paste the link of any public post (`instagram.com/p/…` or `instagram.com/reel/…`). The first 3 ticked rows are shown.
+- **IB Newsletters / Pre-IB Newsletters:** every ticked row appears on the Newsletters page, grouped under its **School year**. Years appear in the order they first show up in the tab, so keep the newest year at the top, and newest newsletter first within each year. A blank School year goes under "Other". If a tab has nothing ticked, the page keeps its built-in links.
 - **Hiding something:** untick **Show** instead of deleting the row.
 - **Publishing:** every edit publishes on its own. Edits that don't change what the homepage shows are skipped. **Website → Publish to website now** forces a publish.
 - **Timing:** the website updates once Vercel finishes redeploying, usually within 1–2 minutes.
