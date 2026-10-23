@@ -162,6 +162,11 @@ document.documentElement.classList.add('js');
       return m ? 'https://www.instagram.com/' + m[1].toLowerCase() + '/' + m[2] + '/' : null;
     };
     // Newsletters page: with nothing ticked in the sheet (or no data), say so.
+    // Homepage Latest: with nothing ticked in the sheet (or no data), say so.
+    var showNothingNew = function (list) {
+      var empty = list.querySelector('.news-empty');
+      if (empty) empty.hidden = false;
+    };
     var showNoNewsletters = function (box) {
       var empty = box.querySelector('.newsletter-empty');
       if (empty) empty.hidden = false;
@@ -190,7 +195,7 @@ document.documentElement.classList.add('js');
           list.textContent = '';
           items.forEach(function (a) { list.appendChild(a); });
           list.setAttribute('data-count', items.length); // lays out 1–5 cards evenly
-        }
+        } else if (list) showNothingNew(list);
         var grid = feedSection.querySelector('[data-feed-instagram]');
         var posts = (data.instagram || []).map(instagramLink).filter(Boolean).slice(0, 3);
         if (grid && posts.length) {
@@ -265,7 +270,8 @@ document.documentElement.classList.add('js');
         });
       })
       .catch(function () {
-        clearTimeout(timeout); // homepage keeps its built-in defaults
+        clearTimeout(timeout); // Instagram keeps its Follow card
+        document.querySelectorAll('[data-feed-latest]').forEach(showNothingNew);
         document.querySelectorAll('[data-newsletters]').forEach(showNoNewsletters);
       });
   }

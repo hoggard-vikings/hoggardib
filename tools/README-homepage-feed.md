@@ -1,6 +1,6 @@
 # Site feed: Latest, Instagram and newsletters from a Google Sheet
 
-The homepage's two **Latest** items and three **Instagram** posts are edited in a Google Sheet. The sheet's Apps Script publishes them to the website. It uses a GitHub personal access token to write `site/data/homepage.json` into this repo, Vercel redeploys, and the homepage reads that file.
+The homepage's **Latest** items (up to 5) and three **Instagram** posts are edited in a Google Sheet. The sheet's Apps Script publishes them to the website. It uses a GitHub personal access token to write `site/data/homepage.json` into this repo, Vercel redeploys, and the homepage reads that file.
 
 ## One-time setup
 
@@ -46,7 +46,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
 - **Hiding something:** untick **Show** instead of deleting the row.
 - **Publishing:** every edit publishes on its own. Edits that don't change what the homepage shows are skipped. **Website → Publish to website now** forces a publish.
 - **Timing:** the website updates once Vercel finishes redeploying, usually within 1–2 minutes.
-- **If the file can't be read,** the homepage falls back to the Latest items built into the site and a "Follow @hoggardib" card.
+- **Nothing is built into the homepage.** If no Latest rows are ticked, or the file can't be read, Latest says "Nothing new right now." Instagram falls back to a "Follow @hoggardib" card.
 
 ## If something goes wrong
 

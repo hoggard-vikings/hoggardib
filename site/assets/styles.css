@@ -185,6 +185,7 @@ a:hover{text-decoration:underline}
 .latest-block,.insta-block{display:flex;flex-direction:column;gap:16px}
 /* Latest: items side by side as cards. */
 .news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.news-list .news-empty{grid-column:1/-1;margin:0}
 .news-item{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:#fff;border:1px solid var(--tint-edge);border-top-width:0;border-radius:var(--radius);box-shadow:var(--shadow-1);transition:transform .25s,box-shadow .25s}
 .news-item::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ink)}
 .news-item:hover{text-decoration:none;transform:translateY(-3px);box-shadow:var(--shadow-2)}
