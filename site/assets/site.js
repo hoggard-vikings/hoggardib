@@ -161,6 +161,11 @@ document.documentElement.classList.add('js');
       var m = String(href || '').trim().match(/^https?:\/\/(?:www\.)?instagram\.com\/(p|reel|tv)\/([\w\-]+)/i);
       return m ? 'https://www.instagram.com/' + m[1].toLowerCase() + '/' + m[2] + '/' : null;
     };
+    // Newsletters page: with nothing ticked in the sheet (or no data), say so.
+    var showNoNewsletters = function (box) {
+      var empty = box.querySelector('.newsletter-empty');
+      if (empty) empty.hidden = false;
+    };
     var controller = window.AbortController ? new AbortController() : null;
     var timeout = setTimeout(function () { if (controller) controller.abort(); }, 6000);
     fetch(feedUrl, controller ? { signal: controller.signal, cache: 'no-cache' } : { cache: 'no-cache' })
@@ -234,7 +239,7 @@ document.documentElement.classList.add('js');
             if (!byYear[year]) { byYear[year] = []; groups.push(year); }
             byYear[year].push({ title: String(it.title), href: href });
           });
-          if (!groups.length) return; // keep the built-in links
+          if (!groups.length) { showNoNewsletters(box); return; }
           box.textContent = '';
           groups.forEach(function (year) {
             var h = document.createElement('h3');
@@ -259,7 +264,10 @@ document.documentElement.classList.add('js');
           });
         });
       })
-      .catch(function () { clearTimeout(timeout); /* keep the built-in defaults */ });
+      .catch(function () {
+        clearTimeout(timeout); // homepage keeps its built-in defaults
+        document.querySelectorAll('[data-newsletters]').forEach(showNoNewsletters);
+      });
   }
 
   // Photo slideshows ([data-slideshow]): one full-size photo at a time, slowly

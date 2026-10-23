@@ -42,7 +42,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
   - **Label** can be text ("2025–2026") or a date cell, which shows as "DEC 4, 2025".
   - **Link** can be a full web address or a page on this site, such as `apply.html` or `newsletters.html`.
 - **Instagram:** paste the link of any public post (`instagram.com/p/…` or `instagram.com/reel/…`). The first 3 ticked rows are shown.
-- **IB Newsletters / Pre-IB Newsletters:** every ticked row appears on the Newsletters page, grouped under its **School year**. Years appear in the order they first show up in the tab, so keep the newest year at the top, and newest newsletter first within each year. A blank School year goes under "Other". If a tab has nothing ticked, the page keeps its built-in links.
+- **IB Newsletters / Pre-IB Newsletters:** every ticked row appears on the Newsletters page, grouped under its **School year**. Years appear in the order they first show up in the tab, so keep the newest year at the top, and newest newsletter first within each year. A blank School year goes under "Other". Nothing is built into the page: if a tab has nothing ticked, that section says "No newsletters have been posted yet."
 - **Hiding something:** untick **Show** instead of deleting the row.
 - **Publishing:** every edit publishes on its own. Edits that don't change what the homepage shows are skipped. **Website → Publish to website now** forces a publish.
 - **Timing:** the website updates once Vercel finishes redeploying, usually within 1–2 minutes.
