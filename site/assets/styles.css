@@ -136,10 +136,11 @@ a:hover{text-decoration:underline}
 .pillar .arrow{font-size:16px;transition:transform .2s}
 .pillar:hover .arrow{transform:translateY(3px)}
 
-.profile-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .profile-card{border-top:4px solid var(--blue);background:var(--tint);padding:16px;display:flex;flex-direction:column;gap:10px;min-height:92px}
 .profile-card .n{font-size:12px;font-weight:700;color:var(--blue)}
 .profile-card .name{font-size:18px;font-weight:700}
+.profile-card .desc{font-size:15px;line-height:1.55}
 
 .two-up{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:8px}
 .panel{background:var(--tint);padding:clamp(24px,2.6vw,36px);display:flex;flex-direction:column;gap:14px}
@@ -579,11 +580,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .rotator-dots button[aria-current="true"]{width:26px;background:var(--navy)}
 
 /* Learner Profile: the centred trait is a large dark-blue card. */
-.rotator-traits .rotator-track{height:230px}
+.rotator-traits .rotator-track{height:330px}
 .trait{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px 28px;background:var(--tint);border:1px solid var(--tint-edge);border-radius:var(--radius);box-shadow:var(--shadow-1)}
-.rotator.is-ready .trait{width:min(380px,62%);height:190px}
+.rotator.is-ready .trait{width:min(560px,62%);height:290px}
 .trait .n{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--blue)}
-.trait .name{font-size:clamp(26px,2.8vw,38px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.trait .name{font-size:clamp(24px,2.4vw,32px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.trait .desc{font-size:15px;line-height:1.5}
 .trait.is-center{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:var(--shadow-2)}
 .trait.is-center .n{color:var(--sky)}
 .trait::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--sky)}
@@ -599,8 +601,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .slideshow-dots button[aria-current="true"]{width:22px;background:#fff}
 
 @media (max-width:860px){
-  .rotator-traits .rotator-track{height:190px}
-  .rotator.is-ready .trait{width:68%;height:160px;padding:18px 20px}
+  .rotator-traits .rotator-track{height:360px}
+  .rotator.is-ready .trait{width:80%;height:320px;padding:18px 20px}
+  .trait .desc{font-size:14px}
   .slideshow{min-height:240px}
   .hero-main{padding:28px 24px;gap:24px}
   .hero-stats{grid-template-columns:1fr;gap:12px}
