@@ -40,7 +40,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
 
 - **Latest:** up to the first 5 ticked rows are shown, top to bottom.
   - **Label** can be text ("2025–2026") or a date cell, which shows as "DEC 4, 2025".
-  - **Link** can be a full web address or a page on this site, such as `apply.html` or `newsletters.html`.
+  - **Link** can be a full web address or a page on this site, such as `apply.html` or `newsletters.html`. A pasted link chip, a link added with Insert → Link, or `=HYPERLINK(...)` all work too, as does a link attached to the **Title** cell when Link is empty. A web address must be complete (`https://example.com/page`); something like `https://hoggardbetaclub` shows without a link.
 - **Instagram:** paste the link of any public post (`instagram.com/p/…` or `instagram.com/reel/…`). The first 3 ticked rows are shown.
 - **IB Newsletters / Pre-IB Newsletters:** every ticked row appears on the Newsletters page, grouped under its **School year**. Years appear in the order they first show up in the tab, so keep the newest year at the top, and newest newsletter first within each year. A blank School year goes under "Other". Nothing is built into the page: if a tab has nothing ticked, that section says "No newsletters have been posted yet."
 - **Hiding something:** untick **Show** instead of deleting the row.
@@ -51,6 +51,7 @@ The token lives only in Script Properties, not in the code. It's visible only to
 ## If something goes wrong
 
 - **Start with Website → Check sheet.** It names the tabs it found, which row it read as the header, which columns it matched, and how many rows are ticked.
+- **A Latest item or newsletter shows but isn't clickable:** its link isn't a complete web address. Check sheet lists these at the bottom.
 - **"Nothing was published":** no ticked rows were found, and the site keeps what it had. Check sheet says why: a tab that wasn't found, a missing column, or nothing ticked.
 
 - **"Add GITHUB_TOKEN…":** the token isn't set. See step 3.

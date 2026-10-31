@@ -76,6 +76,11 @@ function checkSheet() {
     g[1].forEach(function (it) { lines.push('  ' + g[0] + ' (' + (it.year || 'Other') + '): ' + it.title + '  →  ' + (it.link || '(no link)')); });
   });
   if (isEmpty_(feed)) lines.push('  Nothing — see the notes above.');
+  var bad = feed.latest.concat(feed.newsletters.ib, feed.newsletters.preib).filter(function (it) { return !isUsableLink_(it.link); });
+  if (bad.length) {
+    lines.push('', 'These links are not complete web addresses, so they will show without a link:');
+    bad.forEach(function (it) { lines.push('  ' + it.title + '  →  ' + it.link + '   (needs the full address, e.g. https://example.com/page)'); });
+  }
   SpreadsheetApp.getUi().alert(lines.join('\n'));
 }
 
@@ -133,7 +138,7 @@ function buildFeed_() {
     .filter(function (r) { return r.shown && String(r.title || '').trim(); })
     .slice(0, 5)
     .map(function (r) {
-      return { label: formatLabel_(r.label), title: String(r.title).trim(), link: normalizeLink_(r.link) };
+      return { label: formatLabel_(r.label), title: String(r.title).trim(), link: rowLink_(r) };
     });
 
   var instaTab = readTab_('Instagram', ['post'], ['show', 'post']);
@@ -166,7 +171,7 @@ function newsletterRows_(tab) {
     .map(function (r) {
       var year = r.year;
       if (Object.prototype.toString.call(year) === '[object Date]' && !isNaN(year)) year = year.getFullYear();
-      return { year: String(year == null ? '' : year).trim(), title: String(r.title).trim(), link: normalizeLink_(r.link) };
+      return { year: String(year == null ? '' : year).trim(), title: String(r.title).trim(), link: rowLink_(r) };
     });
 }
 
@@ -185,7 +190,11 @@ function readTab_(tabName, required, wanted) {
     return { rows: [], report: tabName + ' tab: NOT FOUND. Tabs in this sheet: ' +
       ss.getSheets().map(function (s) { return '"' + s.getName() + '"'; }).join(', ') };
   }
-  var values = sheet.getDataRange().getValues();
+  var range = sheet.getDataRange();
+  var values = range.getValues();
+  // Links attached to a cell (a pasted link chip, Insert → Link, or =HYPERLINK)
+  // aren't in its value, only in its rich text or formula.
+  var rich = range.getRichTextValues(), formulas = range.getFormulas();
 
   // Header row = first of the first 10 rows that names every required column.
   var headerRow = -1, map = {};
@@ -204,6 +213,8 @@ function readTab_(tabName, required, wanted) {
     var row = values[i];
     var obj = {};
     Object.keys(map).forEach(function (k) { obj[k] = row[map[k]]; });
+    obj.cellLinks = {};
+    Object.keys(map).forEach(function (k) { obj.cellLinks[k] = cellLink_(rich[i][map[k]], formulas[i][map[k]]); });
     var hasContent = required.some(function (k) { return String(obj[k] || '').trim(); });
     if (!hasContent) continue;
     filled++;
@@ -244,6 +255,29 @@ function colLetter_(i) {
   var s = '';
   for (i = i + 1; i > 0; i = Math.floor((i - 1) / 26)) s = String.fromCharCode(65 + (i - 1) % 26) + s;
   return s;
+}
+
+// The link attached to a cell, if any: =HYPERLINK("url", ...) or a rich-text link.
+function cellLink_(richText, formula) {
+  var m = String(formula || '').match(/^=\s*HYPERLINK\s*\(\s*"([^"]+)"/i);
+  if (m) return m[1];
+  if (!richText) return '';
+  if (richText.getLinkUrl()) return richText.getLinkUrl();
+  var runs = richText.getRuns();
+  for (var i = 0; i < runs.length; i++) if (runs[i].getLinkUrl()) return runs[i].getLinkUrl();
+  return '';
+}
+
+// A row's link: a link attached to the Link cell, else the address typed in it,
+// else a link attached to the Title cell.
+function rowLink_(r) {
+  var c = r.cellLinks || {};
+  return normalizeLink_(c.link || r.link || c.title);
+}
+
+// Whether the website can use a link (the same test the homepage applies).
+function isUsableLink_(href) {
+  return !href || /^https?:\/\/[^\s\/]+\.[^\s]+/i.test(href) || /\.html(#[\w\-]+)?$/i.test(href) || /^#[\w\-]+$/.test(href);
 }
 
 // Repairs common link typos: "https;//", "https//", or no "https://" at all.
