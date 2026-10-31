@@ -646,15 +646,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .success-panel{background:var(--ink);color:#fff;border-radius:var(--radius);box-shadow:var(--shadow-2);padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:20px;position:relative;overflow:hidden}
 .success-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--sky)}
 .success-title{margin:0;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-soft)}
-.success-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.success-grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:12px}
 .success-grid div{display:flex;flex-direction:column;gap:6px;padding:14px 12px;border-radius:var(--radius-sm);background:rgb(255 255 255 / .06);border:1px solid rgb(255 255 255 / .1);transition:background .2s,transform .2s}
 .success-grid div:hover{background:rgb(255 255 255 / .12);transform:translateY(-2px)}
 .success-grid b{font-size:clamp(22px,2.2vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1}
 .success-grid span{font-size:13px;font-weight:700;color:var(--sky)}
 .success-grid div:last-child{background:var(--sky);border-color:var(--sky);color:var(--ink)}
 .success-grid div:last-child span{color:var(--ink)}
-@media (max-width:860px){.success-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (max-width:420px){.success-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.success-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.success-grid{gap:8px}.success-grid div{padding:12px 10px}}
 
 /* Accordion contents are clipped while they animate open or closed. */
 .accordion details.is-animating{overflow:hidden}

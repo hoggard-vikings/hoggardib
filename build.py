@@ -33,6 +33,7 @@ PAGES = {
     "is-ib-for-me": "Is IB for Me?",
     "pre-ib-courses": "Required Courses",
     "cas": "CAS",
+    "pre-ib-service": "Pre-IB Service",
     "pre-ib-research-project": "Pre-IB Research Project",
     "diploma-requirements": "Diploma Requirements",
     "extended-essay": "Extended Essay",
@@ -49,18 +50,17 @@ PAGES = {
 }
 
 # Tab bar. (slug, menu label) — a label differs from the page title only where
-# the design asked for it (Pre-IB → Service and Research reuse existing pages).
+# the design asked for it (Pre-IB → Service and Research).
 NAV = [
     ("About IB", [("overview", None), ("is-ib-for-me", None)]),
-    ("Pre-IB", [("apply", None), ("pre-ib-courses", None), ("cas", "Service"), ("pre-ib-research-project", "Research")]),
+    ("Pre-IB", [("apply", None), ("pre-ib-courses", None), ("pre-ib-service", "Service"), ("pre-ib-research-project", "Research")]),
     ("Diploma Programme", [("diploma-requirements", None), ("cas", None), ("extended-essay", None),
                            ("tok", None), ("courses", None), ("sample-schedules", None)]),
     ("College & Outcomes", [("college-credit", None), ("college-prep", None), ("alumni", None)]),
     ("Student Resources", [("policies", None), ("newsletters", None), ("contact", None)]),
 ]
 
-# Which tab a page is shown under in its page header (CAS lives in both tabs;
-# its home is the Diploma Programme). Internal Assessments is reached from the
+# Which tab a page is shown under in its page header. Internal Assessments is reached from the
 # homepage Research section and the Courses page.
 HOME_TAB = {"cas": "Diploma Programme", "internal-assessments": "Diploma Programme"}
 
